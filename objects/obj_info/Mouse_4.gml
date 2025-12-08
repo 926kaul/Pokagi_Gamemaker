@@ -1,0 +1,1 @@
+info_opened = !info_opened;

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"local_fuctions",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"local_fuctions",
+  "parent":{
+    "name":"Pokagi",
+    "path":"Pokagi.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

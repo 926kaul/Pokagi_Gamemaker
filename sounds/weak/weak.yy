@@ -1,0 +1,26 @@
+{
+  "$GMSound":"v2",
+  "%Name":"weak",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "channelFormat":0,
+  "compression":1,
+  "compressionQuality":4,
+  "conversionMode":0,
+  "duration":0.69,
+  "exportDir":"",
+  "name":"weak",
+  "parent":{
+    "name":"Pokagi",
+    "path":"Pokagi.yyp",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"weak.mp3",
+  "volume":0.4,
+}
