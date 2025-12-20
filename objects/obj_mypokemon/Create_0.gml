@@ -5,12 +5,7 @@ depth = -1;
 
 pokeball_opened = false;
 
-pokeball_instance_list = ds_list_create();
-
 create_pokeball_instances = function() {
-    
-    // 이전에 생성된 인스턴스를 저장하는 리스트 초기화/정리 (안전 장치)
-    ds_list_clear(self.pokeball_instance_list);
     
     // --- 격자 설정 값 ---
     var _start_x = 100; // 창 내부 시작 X 좌표
@@ -40,26 +35,14 @@ create_pokeball_instances = function() {
 			_ball_inst.owner = "player"
 			_ball_inst.depth = -5;
             
-            // 5. 나중에 파괴하기 위해 인스턴스 ID를 리스트에 저장
-            ds_list_add(self.pokeball_instance_list, _ball_inst);
         }
     }
 };
 
 clear_pokeball_instances = function(){
-	// 창이 닫힐 때: 포켓볼 인스턴스만 개별적으로 파괴
-    
-    // 리스트를 순회하며 포켓볼 인스턴스 파괴
-    var _list = self.pokeball_instance_list;
-    var _size = ds_list_size(_list);
-    
-    for (var i = 0; i < _size; i++) {
-        // 리스트에서 인스턴스 ID를 가져옵니다.
-        var _inst_id = _list[| i];
-        
-        // 인스턴스가 유효한지 확인 후 파괴합니다.
-        if (instance_exists(_inst_id)) {
-            instance_destroy(_inst_id);
-        }
-    }
+	with (obj_ball) {
+	    if (owner == "player" && !placed) {
+	        instance_destroy();
+	    }
+	}
 };

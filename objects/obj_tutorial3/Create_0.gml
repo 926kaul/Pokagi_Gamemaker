@@ -1,6 +1,6 @@
-text_string = "3. Press Fight Button to Start Game \n after set your pokemons(max 3).";
+text_string = "3. 전장에 내 포켓몬을 배치했다면,(최대 3마리)\nFight 버튼을 눌러 전투를 시작하세요.";
 text_color = c_black;
-text_font = Font3; // 사용할 폰트 리소스 이름
+text_font = Font5; // 사용할 폰트 리소스 이름
 text_halign = fa_left;
 text_valign = fa_top;
 

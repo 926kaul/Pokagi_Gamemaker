@@ -19,26 +19,39 @@ draw_set_valign(fa_top);
 
 
 // obj_controller Draw GUI Event
-var _x = 750;
-var _y = 890;
-var _w = 100;
-var _h = 10;
-var _vol = global.master_volume;
 
-// 1. 볼륨 바의 배경 (테두리) 그리기
+// 1. GUI 기본 크기 가져오기
+var _gui_w = display_get_gui_width();
+var _gui_h = display_get_gui_height();
+
+// 2. 볼륨 바 전용 변수 (이름 뒤에 _vol을 붙여서 구분!)
+var _vol_bar_w = 150; 
+var _vol_bar_h = 10;
+var _vol_padding = 40;
+
+// 3. 우측 하단 좌표 계산
+var _vol_draw_x = _gui_w - _vol_bar_w - _vol_padding;
+var _vol_draw_y = _gui_h - _vol_bar_h - _vol_padding - 20;
+
+var _master_vol = global.master_volume;
+
+// --- 볼륨 바 그리기 ---
+
+// 1. 테두리 (배경)
 draw_set_color(c_black);
-draw_rectangle(_x, _y, _x + _w, _y + _h, true); // true: 외곽선만
+draw_rectangle(_vol_draw_x, _vol_draw_y, _vol_draw_x + _vol_bar_w, _vol_draw_y + _vol_bar_h, true); 
 
-// 2. 현재 볼륨 레벨(채워진 부분) 그리기
-draw_set_color(c_lime); // 채울 색상
-var _fill_width = _w * _vol; // 현재 볼륨 비율에 따른 채워진 너비
-draw_rectangle(_x, _y, _x + _fill_width, _y + _h, false); // false: 채우기
+// 2. 채우기 (레벨)
+draw_set_color(c_lime); 
+var _vol_fill_w = _vol_bar_w * _master_vol; 
+draw_rectangle(_vol_draw_x, _vol_draw_y, _vol_draw_x + _vol_fill_w, _vol_draw_y + _vol_bar_h, false); 
 
-// 3. (선택 사항) 텍스트 표시
+// 3. 텍스트
 draw_set_font(Font3);
 draw_set_color(c_white);
 draw_set_halign(fa_center);
-draw_text(_x + _w / 2, _y + _h + 5, "Volume: " + string(round(_vol * 100)) + "%");
+draw_set_valign(fa_top);
+draw_text(_vol_draw_x + _vol_bar_w / 2, _vol_draw_y + _vol_bar_h + 5, "Volume: " + string(round(_master_vol * 100)) + "%");
 
 
 

@@ -24,22 +24,6 @@ if (is_placing && owner == "player") {
         placed = true;
 		depth = 0;
 		
-		// 1. obj_mypokemon (창) 인스턴스를 찾습니다.
-        var _window = instance_find(obj_mypokemon, 0); 
-        
-        if (instance_exists(_window)) {
-            // 2. 창 오브젝트의 삭제 리스트에서 현재 obj_ball 인스턴스 ID를 찾습니다.
-            // 'id'는 현재 실행 중인 obj_ball 인스턴스의 고유 ID입니다.
-            var _index = ds_list_find_index(_window.pokeball_instance_list, id);
-            
-            // 3. 리스트에 ID가 존재하면 (인덱스가 -1이 아니면) 삭제합니다.
-            if (_index != -1) {
-                ds_list_delete(_window.pokeball_instance_list, _index);
-                
-                // [참고] 이제 이 인스턴스는 창이 닫혀도 살아남게 됩니다.
-            }
-        }
-		
     } else {
         // 원래 자리 복구
         x = original_x;

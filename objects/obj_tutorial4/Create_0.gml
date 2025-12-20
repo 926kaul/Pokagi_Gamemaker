@@ -1,6 +1,6 @@
-text_string = "4. Every Pokemon gets one turn to move in one generation.\nTurn order is calculated based on distance from the center (farther first).\nWe can see turn sequence via the small icons on the left.";
+text_string = "4. 모든 포켓몬은 한 '세대'에 움직일 수 있는 한 턴씩을 가집니다. 한 세대 내에서 턴 순서는 세대가 시작할 때 중심에서 먼 순서대로 결정됩니다. 이번 세대의 턴 순서는 왼쪽 위의 작은 아이콘으로 확인할 수 있습니다.";
 text_color = c_black;
-text_font = Font3;
+text_font = Font5;
 text_halign = fa_left;
 text_valign = fa_top;
 

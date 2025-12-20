@@ -24,5 +24,5 @@ if(room = Room1){
 }
 
 alarm[0] = 1;
-set_master_volume(global.master_volume);
+set_master_volume(global.master_volume*0.5);
 global.sound_cooldown = false;

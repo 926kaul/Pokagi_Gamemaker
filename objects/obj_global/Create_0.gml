@@ -1,6 +1,8 @@
+gpu_set_texfilter(false);
+
 // global.player_choice 변수가 아직 정의되지 않았다면 초기화합니다.
 if (!variable_global_exists("master_volume")) {
-    global.master_volume = 1.0; // 초기값 설정 (선택되지 않음)
+    global.master_volume = 0.5; // 초기값 설정 (선택되지 않음)
 } 
 // 또는 값이 유효한 선택이 아닐 때만 초기화
 if (global.master_volume < 0) { 

@@ -1,6 +1,6 @@
-text_string = "1. It's dangerous to go alone! \n Take one of this..";
+text_string = "1. 바깥은 혼자 돌아다니기엔 위험하단다!\n이 아이들 중 하나를 데려가렴";
 text_color = c_black;
-text_font = Font3; // 사용할 폰트 리소스 이름
+text_font = Font5; // 사용할 폰트 리소스 이름
 text_halign = fa_left;
 text_valign = fa_top;
 

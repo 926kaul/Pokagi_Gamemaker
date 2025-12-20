@@ -1,6 +1,6 @@
-text_string = "5. Pull and Release to shoot your pokemons on turn.\n(max pull distance : 5 blocks)";
+text_string = "5. 내 포켓몬을 당기고 놓음으로써 발사할 수 있습니다.\n(최대 당김 거리:5칸)";
 text_color = c_black;
-text_font = Font3;
+text_font = Font5;
 text_halign = fa_left;
 text_valign = fa_top;
 

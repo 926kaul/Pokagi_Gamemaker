@@ -341,25 +341,44 @@ var _y = 890;
 var _w = 100;
 var _h = 10;
 
-// 볼륨 바 영역을 클릭했거나 드래그 중인지 확인
-var _mouse_over = mouse_x >= _x && mouse_x <= _x + _w && 
-                  mouse_y >= _y && mouse_y <= _y + _h;
+// obj_controller Step Event
 
-// 마우스 왼쪽 버튼을 누르는 순간 또는 누르고 있는 동안
-if (mouse_check_button(mb_left) && _mouse_over) {
+if (instance_exists(obj_controller)) { // 컨트롤러가 존재할 때만 실행
     
-    // 1. 마우스의 X 위치를 볼륨 바 내의 상대적 위치로 변환
-    var _relative_x = mouse_x - _x;
+    // 1. Draw GUI와 동일한 좌표 및 크기 계산 (변수명 겹침 방지)
+    var _gui_w = display_get_gui_width();
+    var _gui_h = display_get_gui_height();
     
-    // 2. 상대적 위치를 볼륨 비율 (0.0 ~ 1.0)로 변환
-    var _new_volume = _relative_x / _w;
-    
-    // 3. 볼륨 비율을 0.0에서 1.0 사이로 클램프(제한)
-    _new_volume = clamp(_new_volume, 0.0, 1.0);
-    
-    // 4. 전역 변수에 새 볼륨 적용
-    global.master_volume = _new_volume;
-    
-    // 5. 볼륨을 실제로 게임에 적용하는 함수 호출
-    set_master_volume(global.master_volume);
+    var _v_bar_w = 150; 
+    var _v_bar_h = 10;
+    var _v_padding = 40;
+
+    var _v_draw_x = _gui_w - _v_bar_w - _v_padding;
+    var _v_draw_y = _gui_h - _v_bar_h - _v_padding - 20;
+
+    // 2. ✨ 중요: GUI 기준 마우스 좌표 가져오기
+    var _m_gui_x = device_mouse_x_to_gui(0);
+    var _m_gui_y = device_mouse_y_to_gui(0);
+
+    // 3. 마우스 오버 확인 (GUI 좌표 기준)
+    var _vol_mouse_over = (_m_gui_x >= _v_draw_x && _m_gui_x <= _v_draw_x + _v_bar_w && 
+                           _m_gui_y >= _v_draw_y && _m_gui_y <= _v_draw_y + _v_bar_h);
+
+    // 4. 클릭 및 드래그 처리
+    if (mouse_check_button(mb_left) && _vol_mouse_over) {
+        
+        // 마우스의 GUI X 위치를 볼륨 바 내의 상대적 위치로 변환
+        var _v_relative_x = _m_gui_x - _v_draw_x;
+        
+        // 비율 계산 (0.0 ~ 1.0) 및 클램프
+        var _v_new_vol = clamp(_v_relative_x / _v_bar_w, 0.0, 1.0);
+        
+        // 전역 변수 업데이트 및 실제 볼륨 적용
+        global.master_volume = _v_new_vol;
+        
+        // 해당 함수가 정의되어 있는지 확인 후 호출
+        if (script_exists(set_master_volume) || asset_get_index("set_master_volume") != -1) {
+            set_master_volume(global.master_volume*0.5);
+        }
+    }
 }

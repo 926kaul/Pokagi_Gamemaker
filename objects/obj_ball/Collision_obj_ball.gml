@@ -15,7 +15,7 @@ show_debug_message("typevs : " + string(val1) + " " + string(val2) + " " + strin
 show_debug_message("collision // v_x:" + string(velocity_x) + "v_y:" + string(velocity_y));
 
 if (typevs_result == 0) exit;
-if(!global.sound_cooldown){
+if(!global.sound_cooldown && current_turn){
 	global.sound_cooldown = true;
 	if(typevs_result >= 4) audio_play_sound(alt_effective, 20, false);
 	else if(typevs_result >= 2) audio_play_sound(effective, 15, false);
