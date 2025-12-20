@@ -167,8 +167,6 @@ function spawn_enemies_for_room(_target_ids, _count) {
             _ball_inst.pokemon_id = _id;
             _ball_inst.placed = true; 
             
-            // 턴 시스템 배열에 추가 (obj_controller 내부에서 호출 시)
-            array_push(balls, _ball_inst);
         } else {
             show_debug_message("경고: 충분한 고유 소환 위치를 찾지 못했습니다. 소환 마릿수 미달.");
         }
