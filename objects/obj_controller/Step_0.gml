@@ -129,8 +129,7 @@ switch (state) {
 			
 	        // 중심 거리 정렬
 	        array_sort(balls, function(a, b) {
-	            return point_distance(a.x, a.y, 480, 480) <
-	                   point_distance(b.x, b.y, 480, 480);
+	            return point_distance(b.x, b.y, 480, 480) - point_distance(a.x, a.y, 480, 480);
 	        });
 
 	        turn_index = 0;

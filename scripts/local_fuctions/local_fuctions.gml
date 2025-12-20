@@ -1,6 +1,5 @@
 function start_turn_system() {
 
-    balls = [];
 	var ctrl = id;
 
     with (obj_ball) {
@@ -9,9 +8,8 @@ function start_turn_system() {
         }
     }
 
-    array_sort(balls, function(a, b) {
-        return point_distance(a.x, a.y, 480, 480) <
-               point_distance(b.x, b.y, 480, 480);
+    array_sort(ctrl.balls, function(a, b) {
+        return point_distance(b.x, b.y, 480, 480) - point_distance(a.x, a.y, 480, 480);
     });
 
     turn_index = 0;
