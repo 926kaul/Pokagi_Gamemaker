@@ -89,10 +89,45 @@ if (start_i >= len) start_i = len - 1;
 
 
 if (state == "enemy_win") {
-	draw_set_font(Font1);
+    var _text = "GAME\n\nOVER";
+
+    // 1. 텍스트 그리기
+    draw_set_font(Font1);
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    draw_text(room_width/2, room_height/2, "GAME\n\nOVER");
+    draw_set_color(c_white);
+    draw_text(_gui_w / 2, _gui_h / 2, _text);
+
+    // 2. 클릭 판정 영역 설정 (글자 크기에 맞춰 적절히 범위를 잡습니다)
+    var _rect_w = 400; // 클릭 허용 가로 범위
+    var _rect_h = 300; // 클릭 허용 세로 범위
+    
+    var _x1 = (_gui_w / 2) - (_rect_w / 2);
+    var _y1 = (_gui_h / 2) - (_rect_h / 2);
+    var _x2 = (_gui_w / 2) + (_rect_w / 2);
+    var _y2 = (_gui_h / 2) + (_rect_h / 2);
+
+    // 3. GUI 기준 마우스 좌표 가져오기
+    var _m_x = device_mouse_x_to_gui(0);
+    var _m_y = device_mouse_y_to_gui(0);
+
+    // 4. 마우스가 글자 근처에 있고 왼쪽 버튼을 눌렀는지 확인
+    if (_m_x >= _x1 && _m_x <= _x2 && _m_y >= _y1 && _m_y <= _y2) {
+        // 마우스를 올렸을 때 피드백 (선택 사항: 글자 색 변경 등)
+        draw_set_alpha(0.2);
+        draw_rectangle(_x1, _y1, _x2, _y2, false);
+        draw_set_alpha(1.0);
+        
+        window_set_cursor(cr_handpoint); // 커서를 손가락 모양으로
+
+        if (mouse_check_button_pressed(mb_left)) {
+            window_set_cursor(cr_default); // 방 이동 전 커서 복구
+			if(room == Room1) room_goto(Room1);
+            else room_goto(Room2); // room2로 이동
+        }
+    } else {
+        window_set_cursor(cr_default);
+    }
 }
 
 else if (state == "player_win") {
