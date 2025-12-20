@@ -10,7 +10,7 @@ if (room == Room2_1) {
 else if (room == Room3_1) {
     
     // 소환할 포켓몬 ID 목록 및 마릿수만 전달
-    var _target_ids = [29, 32, 35, 37, 39 ,41, 43, 46, 48];
+    var _target_ids = [27, 29, 32, 35, 37, 39 ,41, 43, 46, 48];
     var _count = 3; 
 
     spawn_enemies_for_room(_target_ids, _count);
@@ -28,7 +28,7 @@ else if (room == Room4_1) {
 else if (room == Room6_1) {
     
     // 소환할 포켓몬 ID 목록 및 마릿수만 전달
-    var _target_ids = [77, 79, 83, 84, 86, 90 ,92, 96, 98];
+    var _target_ids = [77, 79, 83, 84, 86, 88, 90 ,92, 96, 98];
     var _count = 3; 
 
     spawn_enemies_for_room(_target_ids, _count);
