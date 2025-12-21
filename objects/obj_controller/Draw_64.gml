@@ -122,8 +122,7 @@ if (state == "enemy_win") {
 
         if (mouse_check_button_pressed(mb_left)) {
             window_set_cursor(cr_default); // 방 이동 전 커서 복구
-			if(room == Room1) room_goto(Room1);
-            else room_goto(Room2); // room2로 이동
+			room_goto(Room1); // room2로 이동
         }
     } else {
         window_set_cursor(cr_default);

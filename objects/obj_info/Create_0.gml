@@ -25,3 +25,10 @@ display_set_gui_size(_square_size, _square_size);
 
 
 
+if (os_browser != browser_not_a_browser) {
+    var _is_mobile = (os_type == os_android || os_type == os_ios);
+
+    if (_is_mobile) {
+        show_message("데스크톱 사이트 기능을 이용하시면\n더 원활한 플레이가 가능합니다.");
+    }
+}
