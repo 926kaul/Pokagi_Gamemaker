@@ -26,6 +26,7 @@
     {"id":{"name":"Font3","path":"fonts/Font3/Font3.yy",},},
     {"id":{"name":"Font4","path":"fonts/Font4/Font4.yy",},},
     {"id":{"name":"Font5","path":"fonts/Font5/Font5.yy",},},
+    {"id":{"name":"Font6","path":"fonts/Font6/Font6.yy",},},
     {"id":{"name":"button","path":"objects/button/button.yy",},},
     {"id":{"name":"obj_ball","path":"objects/obj_ball/obj_ball.yy",},},
     {"id":{"name":"obj_controller","path":"objects/obj_controller/obj_controller.yy",},},

@@ -21,13 +21,6 @@ if (selection_done) {
 	        break; 
 	    }
 	}
-	if (_all_caught) {
-	    // 0부터 149까지 모두 1일 경우, enemy_id를 151로 설정합니다.
-	    enemy_id = 151; 
-	    // (선택 사항) 디버그 메시지로 확인
-	    show_debug_message("모든 포켓몬(1-150번)을 잡았습니다! enemy_id를 151로 설정합니다.");
-	}
-	
 
     // player를 오른쪽 대기 위치로 이동
     with (obj_ball) {
@@ -44,6 +37,11 @@ if (selection_done) {
             x = 480;
             y = 240;
 			placed = true;
+			
+			//뮤로 변신
+			if(_all_caught){
+				pokemon_id = 151;
+			}
         }
     }
 

@@ -65,7 +65,7 @@ if(!instance_exists(obj_tutorial3)){
     // 2. 상황에 맞는 텍스트 선택
     var _target_text = "";
 	if(_all_caught) _target_text = text_string_dex_end;
-	else target_text = text_string;
+	else _target_text = text_string;
 
 
 	draw_text_ext(_text_draw_x, _text_draw_y, _target_text, -1, 600);

@@ -6,6 +6,7 @@
     {"name":"Font3","order":35,"path":"fonts/Font3/Font3.yy",},
     {"name":"Font4","order":48,"path":"fonts/Font4/Font4.yy",},
     {"name":"Font5","order":54,"path":"fonts/Font5/Font5.yy",},
+    {"name":"Font6","order":59,"path":"fonts/Font6/Font6.yy",},
     {"name":"button","order":5,"path":"objects/button/button.yy",},
     {"name":"obj_ball","order":3,"path":"objects/obj_ball/obj_ball.yy",},
     {"name":"obj_controller","order":4,"path":"objects/obj_controller/obj_controller.yy",},
