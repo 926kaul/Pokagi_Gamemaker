@@ -53,7 +53,20 @@ if(!instance_exists(obj_tutorial3)){
 	// 텍스트 정렬을 무시하고, 배경 여백을 기준으로 왼쪽 상단부터 그립니다.
 	draw_set_halign(fa_left); 
 	draw_set_valign(fa_top);
+	
+	var _all_caught = true;
+    for (var i = 0; i < 150; i++) { 
+        if (obj_mypokemon.my_pokes[i] != 1) {
+            _all_caught = false;
+            break; 
+        }
+    }
+
+    // 2. 상황에 맞는 텍스트 선택
+    var _target_text = "";
+	if(_all_caught) _target_text = text_string_dex_end;
+	else target_text = text_string;
 
 
-	draw_text_ext(_text_draw_x, _text_draw_y, text_string, -1, 600);
+	draw_text_ext(_text_draw_x, _text_draw_y, _target_text, -1, 600);
 }

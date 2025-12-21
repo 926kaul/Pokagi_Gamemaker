@@ -12,6 +12,7 @@ if (selection_done) {
         case 7: enemy_id = 4; break;
     }
 	
+	var _all_caught = true;
 	for (var i = 0; i < 150; i++) { 
 	    // 현재 요소의 값이 1이 아니라면
 	    if (obj_mypokemon.my_pokes[i] != 1) {
