@@ -70,7 +70,7 @@ else if (flying_opened && is_active) {
             
         // --- 버튼 그리기 (원형으로 변경) ---
         // 내부 채우기
-        draw_set_color(_hover ? make_colour_rgb(192, 192, 128) : c_white);
+        draw_set_color(_hover ? make_colour_rgb(255, 255, 128) : c_white);
         draw_circle(_center_x, _center_y, _radius, false);
             
         // 테두리

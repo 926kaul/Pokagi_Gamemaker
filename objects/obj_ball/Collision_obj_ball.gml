@@ -22,7 +22,7 @@ if(!global.sound_cooldown && current_turn){
 	else if(typevs_result <= 0.5) audio_play_sound(weak, 5, false);
 	else if (typevs_result <= 0.25) audio_play_sound(alt_weak, 1, false);
 	else audio_play_sound(normal, 10, false);
-	alarm[1] = 100; //1.66sec
+	alarm[1] = 10; //0.16sec
 }
 
 // 두 중심 사이 방향

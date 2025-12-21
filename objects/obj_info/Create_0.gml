@@ -1,5 +1,6 @@
 depth = -2;
 info_opened = false;
+global.endclear = false;
 
 link_url = "https://github.com/926kaul/Pokagi";
 link_is_hovered = false;

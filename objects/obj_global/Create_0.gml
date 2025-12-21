@@ -274,5 +274,3 @@ for (var i = 0; i < array_length(_evol_list); i++) {
         global.evol[_array_index] = 1;
     }
 }
-
-global.endclear = false;
