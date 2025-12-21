@@ -241,6 +241,7 @@ switch (state) {
 				state = "wait_turn";
 				break;
 			case RoomFinal:
+				global.endclear = true;
 				if(player_cnt < 3) room_goto(Room1);
 				else room_goto(RoomReal_Final);
 				state = "wait_turn";

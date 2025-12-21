@@ -275,3 +275,4 @@ for (var i = 0; i < array_length(_evol_list); i++) {
     }
 }
 
+global.endclear = false;

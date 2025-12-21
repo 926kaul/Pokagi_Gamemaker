@@ -53,6 +53,19 @@ if(!obj_controller.selection_done){
 	// 텍스트 정렬을 무시하고, 배경 여백을 기준으로 왼쪽 상단부터 그립니다.
 	draw_set_halign(fa_left); 
 	draw_set_valign(fa_top);
-
-	draw_text(_text_draw_x, _text_draw_y, text_string);
+	
+	for (var i = 0; i < 150; i++) { 
+	    // 현재 요소의 값이 1이 아니라면
+	    if (obj_mypokemon.my_pokes[i] != 1) {
+	        // 플래그를 false로 설정하고 루프를 즉시 종료합니다.
+	        _all_caught = false;
+	        break; 
+	    }
+	}
+	
+	if(!global.endclear) draw_text(_text_draw_x, _text_draw_y, text_string);
+	else if(obj_mypokemon.my_pokes[149] != 1) draw_text(_text_draw_x, _text_draw_y, text_string_end);
+	else if(!_all_caught) draw_text(_text_draw_x, _text_draw_y, text_string_real_end);
+	else if(_all_caught) draw_text(_text_draw_x, _text_draw_y, text_string_dex_end);
+	else draw_text(_text_draw_x, _text_draw_y, text_string);
 }

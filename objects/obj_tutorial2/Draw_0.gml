@@ -53,6 +53,7 @@ if(!instance_exists(obj_tutorial1)){
 	// 텍스트 정렬을 무시하고, 배경 여백을 기준으로 왼쪽 상단부터 그립니다.
 	draw_set_halign(fa_left); 
 	draw_set_valign(fa_top);
-
-	draw_text(_text_draw_x, _text_draw_y, text_string);
+	
+	if(obj_mypokemon.my_pokes[149] != 1) draw_text(_text_draw_x, _text_draw_y, text_string);
+	else draw_text(_text_draw_x, _text_draw_y, text_string_real_end);
 }

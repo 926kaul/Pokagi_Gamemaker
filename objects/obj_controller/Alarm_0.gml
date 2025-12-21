@@ -71,6 +71,7 @@ else if (room == RoomFinal){
 		case 1:	list = [130, 6, 18, 136, 103]; break;
 		case 4: list = [103, 9, 18, 134, 59]; break;
 		case 7: list = [59, 3, 18, 135, 130]; break;
+		default: list = [3, 18, 6, 18, 9];
 	}
 
 	for (var i = 0; i < 5; i++) {

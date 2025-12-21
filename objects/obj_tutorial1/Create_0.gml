@@ -1,4 +1,7 @@
 text_string = "1. 바깥은 혼자 돌아다니기엔 위험하단다!\n이 아이들 중 하나를 데려가렴";
+text_string_end = "이겼구나! 축하한다! 네가 새로운 포켓몬 리그의 챔피언이다!\n전설의 포켓몬은 없지만";
+text_string_real_end = "이겼구나! 축하한다! 네가 새로운 포켓몬 리그의 챔피언이자 전설이다!\n 도감은 남았지만";
+text_string_dex_end = "오오! 드디어 도감을 완성했구나! 정말 축하한다! \n 이 아이들을 자세히 보렴."
 text_color = c_black;
 text_font = Font5; // 사용할 폰트 리소스 이름
 text_halign = fa_left;
