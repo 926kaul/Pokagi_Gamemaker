@@ -71,8 +71,9 @@ if (current_turn && !moving) {
     draw_set_font(Font5);
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
-    draw_set_colour(c_black);
-    draw_text(x, y - _radius - 24, team_is_player(owner) ? "READY" : "RIVAL");
+	var _turn_text = team_is_player(owner) ? "READY" : "RIVAL";
+	var _turn_colour = team_is_player(owner) ? ui_colour("cyan") : ui_colour("coral");
+	ui_draw_text_outline(x, y - _radius - 24, _turn_text, _turn_colour, c_black);
 }
 
 draw_set_alpha(1);

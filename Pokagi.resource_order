@@ -60,6 +60,7 @@
     {"name":"Menu_sprite","order":55,"path":"sprites/Menu_sprite/Menu_sprite.yy",},
     {"name":"Pokemon","order":1,"path":"sprites/Pokemon/Pokemon.yy",},
     {"name":"pokemonball_spirte","order":11,"path":"sprites/pokemonball_spirte/pokemonball_spirte.yy",},
+    {"name":"PokemonData","order":57,"path":"sprites/PokemonData/PokemonData.yy",},
     {"name":"spr_board","order":2,"path":"sprites/spr_board/spr_board.yy",},
     {"name":"typevs_sprite","order":46,"path":"sprites/typevs_sprite/typevs_sprite.yy",},
   ],

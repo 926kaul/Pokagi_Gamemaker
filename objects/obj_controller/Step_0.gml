@@ -1,6 +1,30 @@
 //-----------------------------------------------------
 // 1) 선택 끝 처리 (player/ enemy/ 삭제)
 //-----------------------------------------------------
+// Starter icons use a consistent circular hit area. Precise sprite masks vary
+// after the remaster artwork swap and should not decide which starter is usable.
+if (room == Room1 && instance_exists(obj_tutorial1)
+    && !selection_done && mouse_check_button_pressed(mb_left)) {
+    var _choice = noone;
+    var _choice_distance = 1000000;
+
+    with (obj_ball) {
+        if (owner == "none" || owner == Team.NONE) {
+            var _distance = point_distance(x, y, mouse_x, mouse_y);
+            if (_distance <= 34 && _distance < _choice_distance) {
+                _choice_distance = _distance;
+                _choice = id;
+            }
+        }
+    }
+
+    if (instance_exists(_choice)) {
+        _choice.owner = "player";
+        global.player_choice = _choice.pokemon_id;
+        selection_done = true;
+    }
+}
+
 if (selection_done) {
 
     var p = global.player_choice;

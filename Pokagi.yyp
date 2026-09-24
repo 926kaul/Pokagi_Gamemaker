@@ -82,6 +82,7 @@
     {"id":{"name":"Menu_sprite","path":"sprites/Menu_sprite/Menu_sprite.yy",},},
     {"id":{"name":"Pokemon","path":"sprites/Pokemon/Pokemon.yy",},},
     {"id":{"name":"pokemonball_spirte","path":"sprites/pokemonball_spirte/pokemonball_spirte.yy",},},
+    {"id":{"name":"PokemonData","path":"sprites/PokemonData/PokemonData.yy",},},
     {"id":{"name":"spr_board","path":"sprites/spr_board/spr_board.yy",},},
     {"id":{"name":"typevs_sprite","path":"sprites/typevs_sprite/typevs_sprite.yy",},},
   ],

@@ -5,39 +5,41 @@ load_my_pokes();
 depth = -100000;
 
 pokeball_opened = false;
+inspected_pokemon_id = 0;
 x = room_width - 104;
 y = 760;
 
+// Collection screen geometry inside the permanent right command rail.
+pokemon_info_panel_x1 = 28;
+pokemon_info_panel_y1 = 126;
+pokemon_info_panel_x2 = 300;
+pokemon_info_panel_y2 = 620;
+collection_panel_x1 = room_width - 300;
+collection_panel_y1 = 126;
+collection_panel_x2 = room_width - 28;
+collection_panel_y2 = 620;
+collection_grid_x = collection_panel_x1 + 22;
+collection_grid_y = 218;
+collection_grid_columns = 10;
+collection_grid_step_x = 25;
+collection_grid_step_y = 25;
+collection_icon_size = 22;
+
 create_pokeball_instances = function() {
-    
-    // --- 격자 설정 값 ---
-    var _start_x = 76;  // balanced side margins inside the wide drawer
-    var _start_y = 150; // clear space below the drawer header
-    var _step = 38;     // even horizontal and vertical breathing room
-    var _cols = 22;     // seven rows fit in the upper half
-
-    // --- 포켓볼 생성 루프 ---
     for (var i = 0; i < 151; i++) {
-        
-        // 배열 값이 0이 아니면 (포켓몬이 잡혀 있다면)
         if (my_pokes[i] != 0) {
-            
-            // 1. 격자 위치 계산
-            var _col_index = i % _cols;      // 열(Column) 인덱스
-            var _row_index = floor(i / _cols); // 행(Row) 인덱스
-
-            // 2. 실제 화면 좌표 계산
-            var _x = _start_x + (_col_index * _step);
-            var _y = _start_y + (_row_index * _step);
-            
-            // 3. obj_ball 인스턴스 생성
+            var _col_index = i % collection_grid_columns;
+            var _row_index = floor(i / collection_grid_columns);
+            var _x = collection_grid_x + (_col_index * collection_grid_step_x);
+            var _y = collection_grid_y + (_row_index * collection_grid_step_y);
             var _ball_inst = instance_create_layer(_x, _y, "Instances", obj_ball);
-            
-            // 4. 인스턴스 정보 저장 및 추적
-            _ball_inst.pokemon_id = i+1; // 포켓몬 고유 ID (예: 도감 번호)
-			_ball_inst.owner = "player"
+
+            _ball_inst.pokemon_id = i + 1;
+			_ball_inst.owner = "player";
 			_ball_inst.depth = -5;
-            
+			var _collection_scale = collection_icon_size / sprite_get_width(_ball_inst.sprite_index);
+			_ball_inst.image_xscale = _collection_scale;
+			_ball_inst.image_yscale = _collection_scale;
         }
     }
 };

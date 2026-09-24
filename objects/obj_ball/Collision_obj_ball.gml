@@ -14,17 +14,6 @@ var val4 = global.typevs[stats.type2][o.stats.type2];
 show_debug_message("typevs : " + string(val1) + " " + string(val2) + " " + string(val3) + " " + string(val4));
 show_debug_message("collision // v_x:" + string(velocity_x) + "v_y:" + string(velocity_y));
 
-if (typevs_result == 0) exit;
-if(!global.sound_cooldown && current_turn){
-	global.sound_cooldown = true;
-	if(typevs_result >= 4) audio_play_sound(alt_effective, 20, false);
-	else if(typevs_result >= 2) audio_play_sound(effective, 15, false);
-	else if(typevs_result <= 0.25) audio_play_sound(alt_weak, 1, false);
-	else if(typevs_result <= 0.5) audio_play_sound(weak, 5, false);
-	else audio_play_sound(normal, 10, false);
-	alarm[1] = 10; //0.16sec
-}
-
 // 두 중심 사이 방향
 var dx = x - o.x;
 var dy = y - o.y;
@@ -56,6 +45,23 @@ var dot = rvx * nx + rvy * ny;
 
 // 서로 멀어지는 중이면 충돌 아님
 if (dot > 0) exit;
+
+// 무효 상성은 기존처럼 물리 충돌과 효과음을 적용하지 않습니다.
+if (typevs_result == 0) exit;
+
+// Play the SFX only for a real, approaching impact. Previously it played
+// before the separating check above, which made some sounds feel one beat late.
+var _impact_speed = -dot;
+if (_impact_speed >= 0.35
+    && current_turn
+    && current_time >= global.next_collision_sound_time) {
+    global.next_collision_sound_time = current_time + 160;
+    if (typevs_result >= 4) audio_play_sound(alt_effective, 20, false);
+    else if (typevs_result >= 2) audio_play_sound(effective, 15, false);
+    else if (typevs_result <= 0.25) audio_play_sound(alt_weak, 1, false);
+    else if (typevs_result <= 0.5) audio_play_sound(weak, 5, false);
+    else audio_play_sound(normal, 10, false);
+}
 
 // ----------------------------------------
 // 🔥 moving 상태에 따른 유효질량 적용

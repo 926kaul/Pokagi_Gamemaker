@@ -1,10 +1,10 @@
 function board_config_initialize() {
     global.board = {
-        left: 120,
+        left: 440,
         top: 120,
-        right: 840,
+        right: 1160,
         bottom: 840,
-        center_x: 480,
+        center_x: 800,
         center_y: 480,
         player_top: 480,
         grid_size: 40,

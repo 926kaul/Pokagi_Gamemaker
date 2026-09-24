@@ -18,7 +18,7 @@ turn_advanced_by_removal = false;
 if(room = Room1){
 	// 초기 스타팅 3개 생성
 	var list = [1, 4, 7];
-	var xlist = [360, 480, 600];
+	var xlist = [680, 800, 920];
 	var yy = 480;
 
 	for (var i = 0; i < 3; i++) {
@@ -29,10 +29,12 @@ if(room = Room1){
 }
 
 alarm[0] = 1;
-global.sound_cooldown = false;
+// Collision SFX uses an absolute timestamp instead of an alarm owned by a ball.
+// This keeps the cooldown stable even when the ball is destroyed mid-collision.
+global.next_collision_sound_time = 0;
 
 // Bottom HUD volume control state. Draw and input share these exact values.
-volume_bar_x = 740;
+volume_bar_x = 1060;
 volume_bar_width = 170;
 volume_bar_height = 10;
 volume_dragging = false;

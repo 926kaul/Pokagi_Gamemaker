@@ -93,4 +93,12 @@ if (info_opened) {
         link_sprite, 0, _link_x, _link_y, 
         _icon_scale, _icon_scale, 0, _draw_color, 1 
     );
+
+    // Do not treat the icon click that opened the modal as an outside click.
+    if (modal_open_guard) {
+        if (!mouse_check_button(mb_left)) modal_open_guard = false;
+    } else if (mouse_check_button_pressed(mb_left)
+        && !point_in_rectangle(_m_x, _m_y, _x1, _y1, _x2, _y2)) {
+        info_opened = false;
+    }
 }
