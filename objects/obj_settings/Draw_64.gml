@@ -49,8 +49,10 @@ if (settings_opened) {
 
     var _bar_x = _x1 + 150;
     var _bar_y = _y1 + 205;
-    var _mouse_x = device_mouse_x_to_gui(0);
-    var _mouse_y = device_mouse_y_to_gui(0);
+    // The GUI and room share the same 1600x960 logical space. mouse_x/y stay
+    // correct when HTML5 uses a DPR-sized backing store.
+    var _mouse_x = mouse_x;
+    var _mouse_y = mouse_y;
     var _bar_hover = point_in_rectangle(
         _mouse_x, _mouse_y,
         _bar_x - 10, _bar_y - 14,

@@ -9,8 +9,8 @@ var _page_x1 = (_gui_w - 620) * 0.5;
 var _page_y1 = (_gui_h - 360) * 0.5;
 var _bar_x = _page_x1 + 150;
 var _bar_y = _page_y1 + 205;
-var _mouse_x = device_mouse_x_to_gui(0);
-var _mouse_y = device_mouse_y_to_gui(0);
+var _mouse_x = mouse_x;
+var _mouse_y = mouse_y;
 var _bar_hit = point_in_rectangle(
     _mouse_x, _mouse_y,
     _bar_x - 10, _bar_y - 14,

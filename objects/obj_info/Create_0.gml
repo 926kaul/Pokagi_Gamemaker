@@ -24,9 +24,13 @@ link_sprite = github_sprite;
 var _win_w = (os_browser != browser_not_a_browser) ? browser_width : display_get_width();
 var _win_h = (os_browser != browser_not_a_browser) ? browser_height : display_get_height();
 
-// 2. Fit a 5:3 window inside 95% of the available display.
-var _available_w = floor(_win_w * 0.95);
-var _available_h = floor(_win_h * 0.95);
+// 2. Fit a 5:3 window to the browser viewport. Native desktop builds retain a
+// small outer margin, while HTML5 uses every available pixel so thin board
+// lines do not disappear through unnecessary downscaling.
+var _is_browser = os_browser != browser_not_a_browser;
+var _fit_ratio = _is_browser ? 1 : 0.95;
+var _available_w = floor(_win_w * _fit_ratio);
+var _available_h = floor(_win_h * _fit_ratio);
 var _window_w = _available_w;
 var _window_h = floor(_window_w * 3 / 5);
 if (_window_h > _available_h) {
@@ -34,16 +38,32 @@ if (_window_h > _available_h) {
     _window_w = floor(_window_h * 5 / 3);
 }
 
-// 3. Apply the widescreen tabletop window.
-window_set_size(_window_w, _window_h);
+// 3. Keep the HTML canvas backing store at the display's exact physical-pixel
+// size. The custom HTML template keeps its CSS box at _window_w x _window_h,
+// while GameMaker renders into CSS size x devicePixelRatio. This removes the
+// extra browser resampling pass. The HTML5 runtime defines DPI as 96 * DPR.
+browser_pixel_ratio = _is_browser ? max(1, display_get_dpi_x() / 96) : 1;
+if (_is_browser) {
+    global.render_width = max(1, round(_window_w * browser_pixel_ratio));
+    global.render_height = max(1, round(_window_h * browser_pixel_ratio));
+    window_set_size(global.render_width, global.render_height);
+} else {
+    window_set_size(_window_w, _window_h);
+    global.render_width = room_width * 2;
+    global.render_height = room_height * 2;
+}
+global.render_scale = global.render_width / room_width;
+browser_view_width = _win_w;
+browser_view_height = _win_h;
 
-// Small browser canvases use 1x to avoid a 3200x1920 back buffer. Desktop
-// builds and sufficiently large browser windows retain the crisp 2x surface.
-var _small_browser = os_browser != browser_not_a_browser
-    && (_win_w < room_width || _win_h < room_height);
-global.render_scale = _small_browser ? 1 : 2;
-global.render_width = room_width * global.render_scale;
-global.render_height = room_height * global.render_scale;
+render_camera = camera_create_view(0, 0, room_width, room_height, 0, noone, -1, -1, -1, -1);
+view_enabled = true;
+view_visible[0] = true;
+view_camera[0] = render_camera;
+view_xport[0] = 0;
+view_yport[0] = 0;
+view_wport[0] = global.render_width;
+view_hport[0] = global.render_height;
 
 // Keep the source pixel art crisp. Vector UI and SDF fonts scale independently.
 gpu_set_texfilter(false);

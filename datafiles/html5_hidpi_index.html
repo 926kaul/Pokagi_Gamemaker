@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+    ${GM_HTML5_PreHead}
+
+    <head>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PQP85VPL');</script>
+        <!-- End Google Tag Manager -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta charset="utf-8" />
+        <meta name="google-site-verification" content="NrQoTBET1GjG0waqrr2s_ZpJNXDdgNPVaSZ3YKSdoJs" />
+        ${GM_HTML5_InjectDisableCache}
+        <title>${GM_HTML5_BrowserTitle}</title>
+        ${GM_HTML5_PreStyle}
+
+        <style>
+            html,
+            body,
+            #gm4html5_div_id {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                border: 0;
+                overflow: hidden;
+                background: ${GM_HTML5_BackgroundColour};
+                color: #cccccc;
+            }
+
+            /*
+             * CSS pixels define layout only. GML sets the canvas width/height
+             * attributes to this 5:3 box multiplied by devicePixelRatio, so
+             * one backing pixel maps to one physical display pixel.
+             */
+            #canvas {
+                width: min(100vw, calc(100vh * 5 / 3));
+                height: min(100vh, calc(100vw * 3 / 5));
+                image-rendering: auto;
+                -ms-touch-action: none;
+                touch-action: none;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+
+            :-webkit-full-screen #canvas {
+                width: min(100vw, calc(100vh * 5 / 3));
+                height: min(100vh, calc(100vw * 3 / 5));
+            }
+
+            :-webkit-full-screen {
+                width: 100%;
+                height: 100%;
+            }
+
+            div.gm4html5_div_class {
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+
+            div.gm4html5_login {
+                padding: 20px;
+                position: absolute;
+                border: solid 2px #000000;
+                background-color: #404040;
+                color: #00ff00;
+                border-radius: 15px;
+                box-shadow: #101010 20px 20px 40px;
+            }
+
+            div.gm4html5_cancel_button { float: right; }
+            div.gm4html5_login_button { float: left; }
+            div.gm4html5_login_header { text-align: center; }
+        </style>
+
+        ${GM_HTML5_PostStyle}
+        ${GM_HTML5_InjectFlurryAnalytics}
+    </head>
+
+    ${GM_HTML5_PostHead}
+    ${GM_HTML5_PreBody}
+
+    <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQP85VPL"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        ${GM_HTML5_BodyStart}
+
+        <div class="gm4html5_div_class" id="gm4html5_div_id">
+            ${GM_HTML5_InjectSplashScreen}
+            ${GM_HTML5_PreCanvas}
+            <canvas id="canvas" width="${GM_HTML5_GameWidth}" height="${GM_HTML5_GameHeight}" ${GM_HTML5_InjectCenterStyle}>
+                ${GM_HTML5_Canvas}
+                <p>Your browser doesn't support HTML5 canvas.</p>
+            </canvas>
+            ${GM_HTML5_PostCanvas}
+        </div>
+
+        <script type="text/javascript" src="${GM_HTML5_GameFolder}/${GM_HTML5_GameFilename}?cachebust=${GM_HTML5_CacheBust}"></script>
+        ${GM_HTML5_InjectRunnerPath}
+        <script>
+            function pokagiFitCanvasCss() {
+                const canvas = document.getElementById("canvas");
+                if (!canvas) return;
+
+                const viewportWidth = Math.floor(window.innerWidth);
+                const viewportHeight = Math.floor(window.innerHeight);
+                let cssWidth = viewportWidth;
+                let cssHeight = Math.floor(cssWidth * 3 / 5);
+
+                if (cssHeight > viewportHeight) {
+                    cssHeight = viewportHeight;
+                    cssWidth = Math.floor(cssHeight * 5 / 3);
+                }
+
+                canvas.style.width = `${Math.max(1, cssWidth)}px`;
+                canvas.style.height = `${Math.max(1, cssHeight)}px`;
+            }
+
+            window.addEventListener("resize", pokagiFitCanvasCss, { passive: true });
+            window.onload = function () {
+                pokagiFitCanvasCss();
+                GameMaker_Init();
+            };
+        </script>
+        ${GM_HTML5_InjectGoogleAnalytics}
+        ${GM_HTML5_BodyEnd}
+    </body>
+
+    ${GM_HTML5_PostBody}
+</html>

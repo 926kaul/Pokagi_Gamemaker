@@ -127,12 +127,21 @@ function ui_draw_pokemon_hover_panel() {
     if (obj_controller.state == BattleState.PLAYER_WIN
         || obj_controller.state == BattleState.ENEMY_WIN) return;
 
-    var _mx = device_mouse_x_to_gui(0);
-    var _my = device_mouse_y_to_gui(0);
+    // obj_ball instances live in room coordinates. Using GUI mouse coordinates
+    // here breaks on HTML5 when the canvas backing store is scaled by DPR.
+    // The room and GUI share a 1600x960 layout, but mouse_x/mouse_y are the
+    // authoritative coordinates for these world instances.
+    var _mx = mouse_x;
+    var _my = mouse_y;
     var _hovered = noone;
     var _best_distance = 1000000;
     with (obj_ball) {
-        var _radius = max(22, sprite_get_width(sprite_index) * abs(image_xscale) * 0.5);
+        // Collection icons are only 25px apart, so their hit radius must not
+        // overlap neighbouring slots. Placed battle pieces keep a generous
+        // radius that follows their rendered size.
+        var _radius = placed
+            ? max(20, sprite_get_width(sprite_index) * abs(image_xscale) * 0.5)
+            : 12;
         var _distance = point_distance(x, y, _mx, _my);
         if (_distance <= _radius && _distance < _best_distance) {
             _best_distance = _distance;
@@ -402,8 +411,12 @@ function ui_draw_tutorial_overlay() {
 
     if (instance_exists(obj_tutorial3)
         && !instance_exists(obj_tutorial1) && !instance_exists(obj_tutorial2)) {
-        ui_draw_tutorial_bubble(920, 690, 340, 154, 3, "준비 완료", obj_tutorial3.text_string,
-            "START BATTLE을 클릭", button.x + 45, button.y, ui_colour("coral"), true);
+        // Keep the bubble centred directly above the current START button so
+        // both its tail and focus pulse point at the button's actual centre.
+        var _start_x = button.x + 45;
+        var _start_y = button.y - 2;
+        ui_draw_tutorial_bubble(_start_x - 170, 690, 340, 154, 3, "준비 완료", obj_tutorial3.text_string,
+            "START BATTLE을 클릭", _start_x, _start_y, ui_colour("coral"), true);
         return;
     }
 
@@ -423,8 +436,9 @@ function ui_draw_tutorial_overlay() {
         var _t4_text = _t4_all_caught
             ? obj_tutorial4.text_string_dex_end
             : obj_tutorial4.text_string;
+        // The queue reads left-to-right, so highlight its first/current token.
         ui_draw_tutorial_bubble(810, 142, 440, 154, 4, "라운드와 턴 순서", _t4_text,
-            "", 1100, 72, ui_colour("gold"), true);
+            "", 983, 70, ui_colour("gold"), true);
         if (!instance_exists(obj_tutorial5) || !_t5_unlocked) return;
     }
 
@@ -484,12 +498,14 @@ function ui_draw_arena() {
     draw_set_alpha(1);
 
     // Exact 19x19 Go grid; visuals and snap coordinates share one source.
+    // Filled integer-aligned strips survive browser downsampling more reliably
+    // than rasterised line primitives, which can land between output pixels.
     draw_set_colour(_grid_ink);
     for (var _x = _left; _x <= _right; _x += _grid) {
-        draw_line(_x, _top, _x, _bottom);
+        draw_rectangle(_x - 1, _top, _x + 1, _bottom, false);
     }
     for (var _y = _top; _y <= _bottom; _y += _grid) {
-        draw_line(_left, _y, _right, _y);
+        draw_rectangle(_left, _y - 1, _right, _y + 1, false);
     }
 
     draw_set_colour(_wood_dark);
