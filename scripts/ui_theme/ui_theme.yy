@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_theme",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_theme",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

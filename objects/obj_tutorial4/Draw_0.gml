@@ -1,59 +1,7 @@
+// Rendering is centralized in obj_controller's existing Draw GUI event.
+exit;
+
 if(!instance_exists(obj_tutorial3)){
-	// obj_text Draw Event
-
-	// 폰트 설정 (이벤트 상단에 있어야 크기 계산에 사용됨)
-	draw_set_font(text_font);
-	draw_set_halign(text_halign);
-	draw_set_valign(text_valign);
-
-	// ----------------------------------------
-	// 1. 배경 사각형 (포스트잇) 그리기
-	// ----------------------------------------
-
-	var _text_w = string_width(text_string);
-	var _text_h = string_height(text_string);
-
-	// 배경의 최종 크기
-	var _bg_w = min(_text_w, 600) + (bg_padding * 2);
-	var _bg_h = max(_text_h, 100) + (bg_padding * 2);
-
-	// 배경의 시작 좌표 (텍스트의 정렬(align)에 따라 조정)
-	var _bg_x1 = x;
-	var _bg_y1 = y;
-
-	// 텍스트 정렬에 따라 배경 시작 좌표 조정
-	if (text_halign == fa_center) {
-	    _bg_x1 -= _bg_w / 2;
-	} else if (text_halign == fa_right) {
-	    _bg_x1 -= _bg_w;
-	}
-
-	if (text_valign == fa_middle) {
-	    _bg_y1 -= _bg_h / 2;
-	} else if (text_valign == fa_bottom) {
-	    _bg_y1 -= _bg_h;
-	}
-
-	// 배경 그리기
-	draw_set_color(bg_color);
-	draw_rectangle(_bg_x1, _bg_y1, _bg_x1 + _bg_w, _bg_y1 + _bg_h, false); // false: 채우기
-
-
-	// ----------------------------------------
-	// 2. 텍스트 그리기
-	// ----------------------------------------
-
-	// 텍스트 시작 좌표 (배경 사각형 안에 여백만큼 이동)
-	var _text_draw_x = _bg_x1 + bg_padding;
-	var _text_draw_y = _bg_y1 + bg_padding;
-
-	// 텍스트 색상 설정
-	draw_set_colour(text_color);
-
-	// 텍스트 정렬을 무시하고, 배경 여백을 기준으로 왼쪽 상단부터 그립니다.
-	draw_set_halign(fa_left); 
-	draw_set_valign(fa_top);
-	
 	var _all_caught = true;
     for (var i = 0; i < 150; i++) { 
         if (obj_mypokemon.my_pokes[i] != 1) {
@@ -62,11 +10,7 @@ if(!instance_exists(obj_tutorial3)){
         }
     }
 
-    // 2. 상황에 맞는 텍스트 선택
-    var _target_text = "";
-	if(_all_caught) _target_text = text_string_dex_end;
-	else _target_text = text_string;
-
-
-	draw_text_ext(_text_draw_x, _text_draw_y, _target_text, -1, 600);
+    var _target_text = _all_caught ? text_string_dex_end : text_string;
+	ui_draw_tutorial_bubble(490, 142, 440, 154, 4, "라운드와 턴 순서", _target_text,
+		"", 780, 72, ui_colour("gold"), true);
 }

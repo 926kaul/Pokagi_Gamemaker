@@ -14,9 +14,11 @@ if (info_opened) {
     var _x2 = _x1 + _rect_w;
     var _y2 = _y1 + _rect_h;
 
-    // 배경 그리기 (남색)
-    draw_set_colour(make_colour_rgb(16, 16, 64));
-    draw_roundrect_ext(_x1, _y1, _x2, _y2, 20, 20, false);
+    draw_set_alpha(0.72);
+    draw_set_colour(ui_colour("ink"));
+    draw_rectangle(0, 0, _gui_w, _gui_h, false);
+    draw_set_alpha(1);
+    ui_draw_panel(_x1, _y1, _x2, _y2, 16, ui_colour("cyan"));
 
     // ----------------------------------------
     // 3. 설명 텍스트 추가 (상성표 제거 후 위치 재조정)
@@ -25,14 +27,19 @@ if (info_opened) {
     // 텍스트 여백 설정
     var _padding = 40;
     var _text_x = _x1 + _padding;
-    var _text_y = _y1 + _padding;
+    var _text_y = _y1 + 96;
     var _max_width = _rect_w - (_padding * 2);
 
     draw_set_font(Font5);
-    draw_set_color(c_white); 
+    draw_set_color(ui_colour("ivory"));
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     
+    draw_set_font(Font5);
+    draw_text(_text_x, _y1 + 34, "HOW TO PLAY");
+    draw_set_font(Font5);
+    draw_set_colour(ui_colour("muted"));
+
     var _info_text_ko = 
 	    "1. 충돌 후 속도에는 타입 상성이 반영됩니다. 이때, 충돌하는 두 포켓몬의 타입1과 타입2가 모두 계산에 반영됩니다 (1세대 상성 기준).\n" +
 		"예) 바위/땅 타입 포켓몬이 불꽃/비행 타입 포켓몬을 공격할 경우,\n2 * 2 * 2 * 0 = 0으로 공격이 통과하게 됩니다.\n\n" +
@@ -40,7 +47,7 @@ if (info_opened) {
 	    "3. 잡은 포켓몬은 포켓몬 도감에 등록되며, 다음 스테이지부터 사용할 수 있습니다.\n\n"+
 		"4. 스테이지 승리 시점에 생존해 있는 포켓몬은 진화할 수 있습니다.\n\n" +
 	    "5. 전투에서 내 포켓몬 3마리가 모두 생존한 상태로 승리하면 히든 스테이지에 진입할 수도 있습니다.\n\n" +
-	    "6. 빠른 진행을 위해, Gen 6 이후부터는 마찰력이 크게 감소합니다.\n\n" +
+	    "6. 빠른 진행을 위해, 라운드 6부터는 마찰력이 크게 감소합니다.\n\n" +
 		"7. 전장 가장자리의 불편한 조작감은 현실 알까기를 반영한 것입니다.\n\n" +
 	    "8. 더 자세한 정보가 필요하시면, Github page를 방문해 주시기 바랍니다.\n\n";
 	
@@ -51,6 +58,7 @@ if (info_opened) {
     draw_text_ext(_text_x, _text_y, _info_text_ko, -1, _max_width);
 	
 	draw_set_font(Font6);
+	draw_set_colour(ui_colour("muted"));
 	draw_text_ext(_x1+40, _y2-100, _info_respect, -1, _max_width-100);
     
     // ----------------------------------------
@@ -65,9 +73,10 @@ if (info_opened) {
     var _link_x = _x2 - _padding - _icon_width;
     var _link_y = _y2 - _padding - _icon_height;
     
-    // 마우스 오버 체크 (GUI 좌표 기준으로 체크해야 함)
-    var _m_x = device_mouse_x_to_gui(0);
-    var _m_y = device_mouse_y_to_gui(0);
+    // GUI and room share the same logical coordinate system. Avoid physical
+    // canvas coordinates here so browser DPR does not offset the hit target.
+    var _m_x = mouse_x;
+    var _m_y = mouse_y;
     
     var _hover = (_m_x >= _link_x && _m_x <= _link_x + _icon_width && 
                   _m_y >= _link_y && _m_y <= _link_y + _icon_height);
@@ -85,4 +94,12 @@ if (info_opened) {
         link_sprite, 0, _link_x, _link_y, 
         _icon_scale, _icon_scale, 0, _draw_color, 1 
     );
+
+    // Do not treat the icon click that opened the modal as an outside click.
+    if (modal_open_guard) {
+        if (!mouse_check_button(mb_left)) modal_open_guard = false;
+    } else if (mouse_check_button_pressed(mb_left)
+        && !point_in_rectangle(_m_x, _m_y, _x1, _y1, _x2, _y2)) {
+        info_opened = false;
+    }
 }

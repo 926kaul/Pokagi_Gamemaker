@@ -1,8 +1,16 @@
 image_index = pokemon_id-1;
 stats = global.poke_stats[pokemon_id];
+
+// Room-authored enemies already occupy the arena before START. Previously
+// only procedurally spawned enemies were marked as placed immediately, so
+// fixed-room enemies kept the default scale until the button was pressed.
+if (!placed && team_is_enemy(owner) && board_is_inside(x, y)) {
+	placed = true;
+}
+
 if(placed){
-	image_xscale = stats.size;
-	image_yscale = stats.size;
+	image_xscale = base_image_scale * stats.size;
+	image_yscale = base_image_scale * stats.size;
 }
 
 if (is_placing) {
@@ -15,7 +23,7 @@ if (moving) {
     y += velocity_y;
 
 	var friction_coefficient = 0.95;
-	if(obj_controller.generation > 5) friction_coefficient = 0.98;
+	if (obj_controller.generation >= obj_controller.low_friction_round) friction_coefficient = 0.98;
     velocity_x *= friction_coefficient;
     velocity_y *= friction_coefficient;
 

@@ -5,7 +5,7 @@ if (!is_undefined(_random_config)) {
 }
 else if (room == RoomFinal){
 	// 초기 스타팅 3개 생성
-	var xlist = [280, 320, 480, 640, 720];
+	var xlist = [600, 640, 800, 960, 1040];
 	var ylist = [440, 280, 240, 280, 440] ;
 	
 	var list = [];

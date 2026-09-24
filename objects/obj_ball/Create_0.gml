@@ -1,5 +1,8 @@
 sprite_index = Pokemon;
 image_speed = 0;
+base_image_scale = 40 / sprite_get_width(sprite_index);
+image_xscale = base_image_scale;
+image_yscale = base_image_scale;
 
 // 배치 드래그
 is_placing = false;
@@ -21,6 +24,11 @@ current_turn = false;
 
 original_x = x;
 original_y = y;
+// Collection icons receive a permanent home slot after creation. This is
+// separate from original_x/y, which other drag flows may legitimately update.
+has_collection_home = false;
+collection_home_x = x;
+collection_home_y = y;
 
 //탈락 관련
 is_dead = false;

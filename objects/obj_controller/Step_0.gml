@@ -1,6 +1,30 @@
 //-----------------------------------------------------
 // 1) 선택 끝 처리 (player/ enemy/ 삭제)
 //-----------------------------------------------------
+// Starter icons use a consistent circular hit area. Precise sprite masks vary
+// after the remaster artwork swap and should not decide which starter is usable.
+if (room == Room1 && instance_exists(obj_tutorial1)
+    && !selection_done && mouse_check_button_pressed(mb_left)) {
+    var _choice = noone;
+    var _choice_distance = 1000000;
+
+    with (obj_ball) {
+        if (owner == "none" || owner == Team.NONE) {
+            var _distance = point_distance(x, y, mouse_x, mouse_y);
+            if (_distance <= 34 && _distance < _choice_distance) {
+                _choice_distance = _distance;
+                _choice = id;
+            }
+        }
+    }
+
+    if (instance_exists(_choice)) {
+        _choice.owner = "player";
+        global.player_choice = _choice.pokemon_id;
+        selection_done = true;
+    }
+}
+
 if (selection_done) {
 
     var p = global.player_choice;
@@ -24,11 +48,22 @@ if (selection_done) {
 
     // player를 오른쪽 대기 위치로 이동
     with (obj_ball) {
-        if (team_is_player(owner)) {
+		// The collection can be inspected during the starter tutorial. Do not
+		// mistake its temporary grid icons for the selected starter.
+        if (team_is_player(owner) && !has_collection_home) {
 			profile_catch(p);
 			instance_destroy();
         }
     }
+
+	// If the collection was open while the starter was selected, rebuild it
+	// so the newly caught partner appears immediately.
+	with (obj_mypokemon) {
+		if (pokeball_opened) {
+			clear_pokeball_instances();
+			create_pokeball_instances();
+		}
+	}
 
     // enemy 자동 배치
     with (obj_ball) {
@@ -213,53 +248,34 @@ if (global.current_stage_sub == "X") {
 stage_update_display(room);
 
 
+// Show the low-friction explanation once per battle. Keeping this state on the
+// controller guarantees it works in Room1 and when any battle room is run
+// directly from the IDE.
+if (!low_friction_tutorial_seen
+    && !low_friction_tutorial_active
+    && battle_ready
+    && generation == low_friction_round) {
+    low_friction_tutorial_active = true;
+    low_friction_tutorial_open_guard = true;
+}
 
-
-// obj_controller Step Event
-
-var _x = 750;
-var _y = 890;
-var _w = 100;
-var _h = 10;
-
-// obj_controller Step Event
-
-if (instance_exists(obj_controller)) { // 컨트롤러가 존재할 때만 실행
-    
-    // 1. Draw GUI와 동일한 좌표 및 크기 계산 (변수명 겹침 방지)
-    var _gui_w = display_get_gui_width();
-    var _gui_h = display_get_gui_height();
-    
-    var _v_bar_w = 150; 
-    var _v_bar_h = 10;
-    var _v_padding = 40;
-
-    var _v_draw_x = _gui_w - _v_bar_w - _v_padding;
-    var _v_draw_y = _gui_h - _v_bar_h - _v_padding - 20;
-
-    // 2. ✨ 중요: GUI 기준 마우스 좌표 가져오기
-    var _m_gui_x = device_mouse_x_to_gui(0);
-    var _m_gui_y = device_mouse_y_to_gui(0);
-
-    // 3. 마우스 오버 확인 (GUI 좌표 기준)
-    var _vol_mouse_over = (_m_gui_x >= _v_draw_x && _m_gui_x <= _v_draw_x + _v_bar_w && 
-                           _m_gui_y >= _v_draw_y && _m_gui_y <= _v_draw_y + _v_bar_h);
-
-    // 4. 클릭 및 드래그 처리
-    if (mouse_check_button(mb_left) && _vol_mouse_over) {
-        
-        // 마우스의 GUI X 위치를 볼륨 바 내의 상대적 위치로 변환
-        var _v_relative_x = _m_gui_x - _v_draw_x;
-        
-        // 비율 계산 (0.0 ~ 1.0) 및 클램프
-        var _v_new_vol = clamp(_v_relative_x / _v_bar_w, 0.0, 1.0);
-        
-        // 전역 변수 업데이트 및 실제 볼륨 적용
-        global.master_volume = _v_new_vol;
-        
-        // 해당 함수가 정의되어 있는지 확인 후 호출
-        if (script_exists(set_master_volume) || asset_get_index("set_master_volume") != -1) {
-            set_master_volume(global.master_volume*0.5);
+// Ignore a click already held when the warning appears. After release, one
+// click anywhere outside the bubble dismisses it for the rest of this battle.
+if (low_friction_tutorial_active) {
+    if (low_friction_tutorial_open_guard) {
+        if (!mouse_check_button(mb_left)) {
+            low_friction_tutorial_open_guard = false;
         }
+    } else if (mouse_check_button_pressed(mb_left)
+        && !point_in_rectangle(mouse_x, mouse_y, 350, 126, 780, 296)) {
+        low_friction_tutorial_seen = true;
+        low_friction_tutorial_active = false;
     }
+}
+
+// Round progression remains a fallback dismissal path.
+if (low_friction_tutorial_active && generation > low_friction_round) {
+    low_friction_tutorial_seen = true;
+    low_friction_tutorial_active = false;
+    low_friction_tutorial_open_guard = false;
 }

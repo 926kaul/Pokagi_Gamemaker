@@ -12,7 +12,6 @@ with (obj_ball) {
         if (team_is_player(owner)) player_count++;
         if (team_is_enemy(owner)) {
 			enemy_count++;
-			placed = true;
 		}
     }
 }

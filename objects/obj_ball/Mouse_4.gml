@@ -1,10 +1,15 @@
-if (!obj_controller. turn_system_started
+if (!instance_exists(obj_tutorial1)
+    && max(obj_controller.player_deployments_used, board_player_placed_count()) < 3
+    && obj_controller.state != BattleState.PLAYER_WIN
+    && obj_controller.state != BattleState.ENEMY_WIN
     && team_is_player(owner)
     && !placed) 
 {
     is_placing = true;
-	original_x = x;
-	original_y = y;
+	if (!has_collection_home) {
+		original_x = x;
+		original_y = y;
+	}
 }
 
 

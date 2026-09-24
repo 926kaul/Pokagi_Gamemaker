@@ -16,6 +16,9 @@ function start_turn_system() {
 
     turn_index = 0;
     generation = 1;
+    low_friction_tutorial_seen = false;
+    low_friction_tutorial_active = false;
+    low_friction_tutorial_open_guard = false;
     state = BattleState.WAIT_TURN;
 }
 
@@ -25,7 +28,7 @@ function enemy_take_action(enemy_inst) {
     var player_list = array_create(0);
 
     with (obj_ball) {
-        if (team_is_player(owner)) array_push(player_list, id);
+        if (placed && team_is_player(owner)) array_push(player_list, id);
     }
 	
 	
@@ -191,7 +194,7 @@ function save_my_pokes() {
         return; 
     }
     
-    var _save_key = "poke_status_str_v2";
+    var _save_key = "poke_status_str";
     var _pokes_array = _mypokemon_inst.my_pokes;
     var _array_len = array_length(_pokes_array);
     
@@ -234,7 +237,8 @@ function load_my_pokes() {
         return; 
     }
     
-    var _save_key = "poke_status_str_v2";
+    var _save_key = "poke_status_str";
+    var _temporary_v2_key = "poke_status_str_v2";
 
     // 1. 새 배열을 0으로 초기화
     var _new_pokes_array = array_create(151, 0); 
@@ -245,7 +249,19 @@ function load_my_pokes() {
         var _file = file_text_open_read(_save_key);
         _save_string = file_text_read_string(_file); 
         file_text_close(_file);
-    } 
+    } else if (file_exists(_temporary_v2_key)) {
+        // Preserve progress created while the temporary v2 key was active,
+        // then migrate it back to the original key used by existing players.
+        var _v2_file = file_text_open_read(_temporary_v2_key);
+        _save_string = file_text_read_string(_v2_file);
+        file_text_close(_v2_file);
+
+        if (string_length(_save_string) >= 151) {
+            var _legacy_file = file_text_open_write(_save_key);
+            file_text_write_string(_legacy_file, _save_string);
+            file_text_close(_legacy_file);
+        }
+    }
     
     // 저장된 문자열이 없거나 길이가 잘못되었다면 여기서 종료 (모두 0인 배열 유지)
     if (string_length(_save_string) < 151) { 
@@ -278,5 +294,5 @@ function load_my_pokes() {
 
 /// @function set_master_volume(volume)
 function set_master_volume(_volume) {
-    audio_group_set_gain(audiogroup_default, _volume, 0); 
+    audio_group_set_gain(audiogroup_default, clamp(_volume, 0, 1), 0);
 }
