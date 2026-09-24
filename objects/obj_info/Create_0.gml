@@ -10,7 +10,7 @@ modal_open_guard = false;
 // 엔딩 플래그는 최초 실행에만 초기화합니다.
 // 이전에는 시작과 동시에 true가 되어 클리어 대사가 노출되었습니다.
 if (!variable_global_exists("endclear")) {
-	global.endclear = false;
+	global.endclear = profile_load_champion();
 }
 
 link_url = "https://github.com/926kaul/Pokagi";

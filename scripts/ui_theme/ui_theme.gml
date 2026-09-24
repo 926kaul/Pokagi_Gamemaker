@@ -370,18 +370,31 @@ function ui_draw_tutorial_overlay() {
     }
 
     if (instance_exists(obj_tutorial2) && !instance_exists(obj_tutorial1)) {
+        var _t2_flying = global.endclear
+            && instance_exists(obj_flying);
         var _t2_open = obj_mypokemon.pokeball_opened;
-        var _t2_target_x = _t2_open ? obj_mypokemon.collection_grid_x : obj_mypokemon.x + 32;
-        var _t2_target_y = _t2_open ? obj_mypokemon.collection_grid_y : obj_mypokemon.y + 32;
-        var _t2_body = obj_mypokemon.my_pokes[149] != 1
-            ? obj_tutorial2.text_string
-            : obj_tutorial2.text_string_real_end;
+        var _t2_target_x = _t2_flying
+            ? obj_flying.x
+            : (_t2_open ? obj_mypokemon.collection_grid_x : obj_mypokemon.x + 32);
+        var _t2_target_y = _t2_flying
+            ? obj_flying.y
+            : (_t2_open ? obj_mypokemon.collection_grid_y : obj_mypokemon.y + 32);
+        var _t2_body = _t2_flying
+            ? obj_tutorial2.text_string_real_end
+            : obj_tutorial2.text_string;
+        var _t2_title = _t2_flying ? "공중 날기" : "팀을 꾸려볼까요?";
         var _t2_hint = _t2_open ? "최대 3마리" : "오른쪽 아래 버튼을 클릭";
-        if (_t2_open) {
-            ui_draw_tutorial_bubble(920, 140, 340, 178, 2, "팀을 꾸려볼까요?", _t2_body, _t2_hint,
+        if (_t2_flying) {
+            _t2_hint = "날개 버튼을 클릭";
+            // Keep the bubble immediately left of the unlocked wing button.
+            // Its right-hand tail and focus ring share the button's real centre.
+            ui_draw_tutorial_bubble(1120, 530, 360, 180, 2, _t2_title, _t2_body, _t2_hint,
+                _t2_target_x, _t2_target_y, ui_colour("gold"), true);
+        } else if (_t2_open) {
+            ui_draw_tutorial_bubble(920, 140, 340, 178, 2, _t2_title, _t2_body, _t2_hint,
                 _t2_target_x, _t2_target_y, ui_colour("cyan"), true);
         } else {
-            ui_draw_tutorial_bubble(1296, 490, 288, 230, 2, "팀을 꾸려볼까요?", _t2_body, _t2_hint,
+            ui_draw_tutorial_bubble(1296, 490, 288, 230, 2, _t2_title, _t2_body, _t2_hint,
                 _t2_target_x, _t2_target_y, ui_colour("cyan"), true);
         }
         return;

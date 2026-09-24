@@ -1,4 +1,4 @@
-if (obj_mypokemon.my_pokes[149] == 1) {
+if (global.endclear) {
     is_active = true;
     image_alpha = 1.0; // 밝게
 } else {

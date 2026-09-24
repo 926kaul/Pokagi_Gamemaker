@@ -16,7 +16,7 @@ function battle_process_victory(_controller) {
             }
         }
 
-        if (room == RoomFinal) global.endclear = true;
+        if (room == RoomFinal) profile_set_champion();
         var _next_room = stage_get_next_room(room, player_cnt >= 3);
         if (_next_room != noone) room_goto(_next_room);
         state = BattleState.WAIT_TURN;
