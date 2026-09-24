@@ -1,9 +1,18 @@
-"""Sync GameMaker font ranges to characters used by GML and supported by TTF."""
+"""Keep the GameMaker UI fonts safe for arbitrary modern Korean text.
+
+Historically this script generated ranges from only the Hangul syllables that
+were already present in GML.  That made the bitmap small, but every new line of
+Korean UI copy could introduce a syllable that was not in the last generated
+bitmap.  Both UI fonts now permanently include the complete modern Hangul
+syllable block, so editing copy no longer requires updating per-character
+ranges.
+"""
 
 from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 try:
@@ -18,9 +27,15 @@ FONT_JOBS = (
     (ROOT / "fonts/Font6/Font6.yy", ROOT / "fonts/Font6/Maplestory GameMaker Light.ttf"),
 )
 
+ASCII = set(range(32, 127))
+MIDDLE_DOT = {0x00B7}
+MODERN_HANGUL = set(range(0xAC00, 0xD7A4))
+PERMANENT_CODEPOINTS = ASCII | MIDDLE_DOT | MODERN_HANGUL
 
-def used_codepoints() -> set[int]:
-    points = set(range(32, 128))
+
+def used_ui_codepoints() -> set[int]:
+    """Return UI-safe characters currently present anywhere in GML."""
+    points = set(ASCII)
     for path in ROOT.rglob("*.gml"):
         for char in path.read_text(encoding="utf-8").replace("\ufeff", ""):
             codepoint = ord(char)
@@ -29,6 +44,13 @@ def used_codepoints() -> set[int]:
             # only visible UI punctuation plus Hangul syllables.
             if codepoint == 183 or 0xAC00 <= codepoint <= 0xD7A3:
                 points.add(codepoint)
+    return points
+
+
+def covered_codepoints(ranges: list[dict[str, int]]) -> set[int]:
+    points: set[int] = set()
+    for item in ranges:
+        points.update(range(item["lower"], item["upper"] + 1))
     return points
 
 
@@ -86,17 +108,49 @@ def dump_yy(resource: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def main() -> None:
-    requested = used_codepoints()
+def supported_codepoints(requested: set[int]) -> set[int]:
     if TTFont is None:
         # Maplestory Light contains the complete modern Hangul syllable block.
-        # The requested set is already restricted to ASCII, middle dot and
-        # Hangul, so the sync remains safe in a bare Python installation.
-        supported = requested
+        # The requested set is restricted to ASCII, middle dot and Hangul, so
+        # the sync remains safe in a bare Python installation.
         print("fontTools unavailable; using the font's complete Hangul coverage")
-    else:
-        supported_sets = [set(TTFont(ttf).getBestCmap()) for _, ttf in FONT_JOBS]
-        supported = set.intersection(*supported_sets)
+        return requested
+    supported_sets = [set(TTFont(ttf).getBestCmap()) for _, ttf in FONT_JOBS]
+    return set.intersection(*supported_sets)
+
+
+def check() -> None:
+    """Fail when source text is outside a font range or finished bitmap."""
+    used = used_ui_codepoints()
+    failures: list[str] = []
+    for resource_path, _ in FONT_JOBS:
+        resource = load_yy(resource_path)
+        missing_range = sorted(used - covered_codepoints(resource["ranges"]))
+        if missing_range:
+            failures.append(
+                f"{resource_path.name}: range missing "
+                + ", ".join(f"U+{point:04X}" for point in missing_range)
+            )
+
+        # While regenerateBitmap is true, the checked-in glyph table is
+        # intentionally stale. GameMaker refreshes it on the next font build.
+        if not resource.get("regenerateBitmap", False):
+            glyphs = {int(point) for point in resource.get("glyphs", {})}
+            missing_bitmap = sorted(used - glyphs)
+            if missing_bitmap:
+                failures.append(
+                    f"{resource_path.name}: bitmap missing "
+                    + ", ".join(f"U+{point:04X}" for point in missing_bitmap)
+                )
+
+    if failures:
+        raise SystemExit("\n".join(failures))
+    print("Font coverage check passed for all Korean text currently in GML")
+
+
+def sync() -> None:
+    requested = PERMANENT_CODEPOINTS | used_ui_codepoints()
+    supported = supported_codepoints(requested)
     # Do not force GameMaker's U+25AF missing-glyph marker. Some fonts do not
     # provide it, and GameMaker stops generating all later ranges at that point.
     selected = sorted(requested & supported)
@@ -104,14 +158,21 @@ def main() -> None:
 
     for resource_path, _ in FONT_JOBS:
         resource = load_yy(resource_path)
-        resource["ranges"] = ranges
-        resource["regenerateBitmap"] = True
-        resource_path.write_text(dump_yy(resource), encoding="utf-8")
+        if resource.get("ranges") != ranges:
+            resource["ranges"] = ranges
+            resource["regenerateBitmap"] = True
+            resource_path.write_text(dump_yy(resource), encoding="utf-8")
+            print(f"Updated {resource_path.name}; GameMaker bitmap regeneration required")
+        else:
+            print(f"{resource_path.name}: ranges already current")
 
     unsupported = sorted(requested - supported)
-    print(f"Selected {len(selected)} characters in {len(ranges)} exact ranges")
+    print(f"Selected {len(selected)} characters in {len(ranges)} permanent ranges")
     print("Skipped unsupported codepoints: " + ", ".join(f"U+{p:04X}" for p in unsupported))
 
 
 if __name__ == "__main__":
-    main()
+    if "--check" in sys.argv[1:]:
+        check()
+    else:
+        sync()

@@ -15,6 +15,7 @@
     {"name":"obj_info","order":44,"path":"objects/obj_info/obj_info.yy",},
     {"name":"obj_menu","order":56,"path":"objects/obj_menu/obj_menu.yy",},
     {"name":"obj_mypokemon","order":10,"path":"objects/obj_mypokemon/obj_mypokemon.yy",},
+    {"name":"obj_settings","order":65,"path":"objects/obj_settings/obj_settings.yy",},
     {"name":"obj_tutorial1","order":49,"path":"objects/obj_tutorial1/obj_tutorial1.yy",},
     {"name":"obj_tutorial2","order":50,"path":"objects/obj_tutorial2/obj_tutorial2.yy",},
     {"name":"obj_tutorial3","order":51,"path":"objects/obj_tutorial3/obj_tutorial3.yy",},

@@ -5,5 +5,5 @@ if (instance_number(object_index) > 1) {
 }
 menu_opened = false; // 상성표 창 제어 변수
 modal_open_guard = false;
-x = room_width - 72;
+x = room_width - 216;
 y = 24;

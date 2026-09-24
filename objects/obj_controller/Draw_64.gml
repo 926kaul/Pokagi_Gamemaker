@@ -3,6 +3,7 @@ var _gui_w = display_get_gui_width();
 var _gui_h = display_get_gui_height();
 
 var _ivory = ui_colour("ivory");
+var _ink = ui_colour("ink");
 var _coral = ui_colour("coral");
 var _cyan = ui_colour("cyan");
 var _gold = ui_colour("gold");
@@ -19,15 +20,26 @@ with (obj_ball) {
 }
 
 // Card 1: round and physics mode.
-ui_draw_panel(340, 16, 504, 106, 10, _gold);
+var _low_friction = generation >= low_friction_round;
+var _round_accent = _low_friction ? _coral : _gold;
+ui_draw_panel(340, 16, 504, 106, 10, _round_accent);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_font(Font5);
 draw_set_colour(_ivory);
 draw_text_transformed(422, 52, "라운드 " + string(generation), 1.15, 1.15, 0);
 draw_set_font(Font6);
-draw_set_colour(generation > 5 ? _gold : _muted);
-draw_text(422, 88, generation > 5 ? "저마찰 모드" : "표준 마찰");
+if (_low_friction) {
+    draw_set_colour(_coral);
+    draw_circle(365, 88, 9, false);
+    draw_set_colour(_ink);
+    draw_text(365, 89, "!");
+    draw_set_colour(_coral);
+    draw_text(431, 88, "저마찰 환경");
+} else {
+    draw_set_colour(_muted);
+    draw_text(422, 88, "표준 마찰");
+}
 
 // Card 2: one unambiguous state label.
 var _state_text = "배치 준비";
@@ -146,32 +158,6 @@ draw_text(360, _gui_h - 60, "STAGE");
 draw_set_font(Font5);
 draw_set_colour(_ivory);
 draw_text(360, _gui_h - 35, global.stage_display_text);
-
-ui_draw_panel(966, _gui_h - 82, 1260, _gui_h - 18, 10, _gold);
-draw_set_font(Font6);
-draw_set_colour(_muted);
-draw_text(986, _gui_h - 60, "VOLUME");
-var _volume_x = volume_bar_x;
-var _volume_y = _gui_h - 57;
-var _volume_w = volume_bar_width;
-var _volume_h = volume_bar_height;
-var _volume_mouse_x = device_mouse_x_to_gui(0);
-var _volume_mouse_y = device_mouse_y_to_gui(0);
-var _volume_hover = point_in_rectangle(
-    _volume_mouse_x, _volume_mouse_y,
-    _volume_x - 6, _volume_y - 8,
-    _volume_x + _volume_w + 6, _volume_y + _volume_h + 8
-);
-var _volume_accent = (_volume_hover || volume_dragging) ? _ivory : _gold;
-draw_set_colour(make_colour_rgb(47, 58, 65));
-draw_roundrect_ext(_volume_x, _volume_y, _volume_x + _volume_w, _volume_y + _volume_h, 5, 5, false);
-draw_set_colour(_volume_accent);
-draw_roundrect_ext(_volume_x, _volume_y, _volume_x + _volume_w * global.master_volume, _volume_y + _volume_h, 5, 5, false);
-draw_circle(_volume_x + _volume_w * global.master_volume, _volume_y + _volume_h * 0.5, _volume_hover || volume_dragging ? 7 : 5, false);
-draw_set_halign(fa_right);
-draw_set_font(Font5);
-draw_set_colour(_ivory);
-draw_text(1230, _gui_h - 35, string(round(global.master_volume * 100)) + "%");
 
 // End-state modal.
 if (state == BattleState.ENEMY_WIN || state == BattleState.PLAYER_WIN) {

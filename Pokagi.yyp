@@ -35,6 +35,7 @@
     {"id":{"name":"obj_info","path":"objects/obj_info/obj_info.yy",},},
     {"id":{"name":"obj_menu","path":"objects/obj_menu/obj_menu.yy",},},
     {"id":{"name":"obj_mypokemon","path":"objects/obj_mypokemon/obj_mypokemon.yy",},},
+    {"id":{"name":"obj_settings","path":"objects/obj_settings/obj_settings.yy",},},
     {"id":{"name":"obj_tutorial1","path":"objects/obj_tutorial1/obj_tutorial1.yy",},},
     {"id":{"name":"obj_tutorial2","path":"objects/obj_tutorial2/obj_tutorial2.yy",},},
     {"id":{"name":"obj_tutorial3","path":"objects/obj_tutorial3/obj_tutorial3.yy",},},

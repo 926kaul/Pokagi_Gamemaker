@@ -23,7 +23,7 @@ if (moving) {
     y += velocity_y;
 
 	var friction_coefficient = 0.95;
-	if(obj_controller.generation > 5) friction_coefficient = 0.98;
+	if (obj_controller.generation >= obj_controller.low_friction_round) friction_coefficient = 0.98;
     velocity_x *= friction_coefficient;
     velocity_y *= friction_coefficient;
 

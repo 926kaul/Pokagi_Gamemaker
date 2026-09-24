@@ -16,6 +16,8 @@ function start_turn_system() {
 
     turn_index = 0;
     generation = 1;
+    low_friction_tutorial_seen = false;
+    low_friction_tutorial_active = false;
     state = BattleState.WAIT_TURN;
 }
 

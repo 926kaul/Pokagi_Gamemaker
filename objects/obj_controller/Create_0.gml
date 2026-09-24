@@ -12,8 +12,15 @@ balls = []
 
 turn_index = 0;
 generation = 1;
+low_friction_round = 6;
 state = BattleState.IDLE;
 turn_advanced_by_removal = false;
+
+// Low-friction guidance is tracked per battle. A new battle must show the
+// round 6 warning again even when it starts in the same game session.
+low_friction_tutorial_seen = false;
+low_friction_tutorial_active = false;
+low_friction_tutorial_text = "라운드 6부터 마찰력이 감소합니다.\n포켓몬의 이동이 오래 이어지니 세기와 각도를 조절하세요.";
 
 if(room = Room1){
 	// 초기 스타팅 3개 생성
@@ -33,9 +40,5 @@ alarm[0] = 1;
 // This keeps the cooldown stable even when the ball is destroyed mid-collision.
 global.next_collision_sound_time = 0;
 
-// Bottom HUD volume control state. Draw and input share these exact values.
-volume_bar_x = 1060;
-volume_bar_width = 170;
-volume_bar_height = 10;
-volume_dragging = false;
+// Apply the persisted value once the audio group is ready.
 set_master_volume(global.master_volume);

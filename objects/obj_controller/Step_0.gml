@@ -237,39 +237,18 @@ if (global.current_stage_sub == "X") {
 stage_update_display(room);
 
 
+// Show the low-friction explanation once per battle. Keeping this state on the
+// controller guarantees it works in Room1 and when any battle room is run
+// directly from the IDE.
+if (!low_friction_tutorial_seen
+    && !low_friction_tutorial_active
+    && battle_ready
+    && generation == low_friction_round) {
+    low_friction_tutorial_active = true;
+}
 
-
-// Bottom HUD volume slider. Use the same geometry as Draw GUI and keep dragging
-// after the pointer leaves the thin track, until the mouse button is released.
-var _volume_ui_hidden = instance_exists(obj_mypokemon)
-    && obj_mypokemon.pokeball_opened
-    && !battle_ready;
-var _volume_mouse_x = device_mouse_x_to_gui(0);
-var _volume_mouse_y = device_mouse_y_to_gui(0);
-var _volume_y = display_get_gui_height() - 57;
-var _volume_hit = point_in_rectangle(
-    _volume_mouse_x, _volume_mouse_y,
-    volume_bar_x - 6, _volume_y - 8,
-    volume_bar_x + volume_bar_width + 6, _volume_y + volume_bar_height + 8
-);
-
-if (_volume_ui_hidden) {
-    volume_dragging = false;
-} else {
-    if (mouse_check_button_pressed(mb_left) && _volume_hit) {
-        volume_dragging = true;
-    }
-
-    if (!mouse_check_button(mb_left)) {
-        volume_dragging = false;
-    }
-
-    if (volume_dragging) {
-        global.master_volume = clamp(
-            (_volume_mouse_x - volume_bar_x) / volume_bar_width,
-            0,
-            1
-        );
-        set_master_volume(global.master_volume);
-    }
+// Keep the warning throughout round 6 and dismiss it only when round 7 begins.
+if (low_friction_tutorial_active && generation > low_friction_round) {
+    low_friction_tutorial_seen = true;
+    low_friction_tutorial_active = false;
 }

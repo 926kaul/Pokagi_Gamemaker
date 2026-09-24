@@ -325,6 +325,14 @@ function ui_draw_tutorial_bubble(_x, _y, _w, _h, _step, _title, _body, _hint, _t
 /// Tutorial objects continue to own progression and copy, but no longer draw
 /// through the application surface before it is scaled to the window.
 function ui_draw_tutorial_overlay() {
+    // Round 6 changes the active physics model, so this warning takes priority
+    // over any older tutorial instance that may still be lingering.
+    if (obj_controller.low_friction_tutorial_active && obj_controller.battle_ready) {
+        ui_draw_tutorial_bubble(350, 126, 430, 170, 6, "저마찰 환경", obj_controller.low_friction_tutorial_text,
+            "속도가 더 오래 유지됩니다", 422, 88, ui_colour("coral"), true);
+        return;
+    }
+
     if (instance_exists(obj_tutorial1) && !obj_controller.selection_done) {
         var _t1_all_caught = true;
         for (var _t1_i = 0; _t1_i < 150; _t1_i++) {
@@ -403,7 +411,7 @@ function ui_draw_tutorial_overlay() {
             ? obj_tutorial4.text_string_dex_end
             : obj_tutorial4.text_string;
         ui_draw_tutorial_bubble(810, 142, 440, 154, 4, "라운드와 턴 순서", _t4_text,
-            "상단 아이콘은 왼쪽부터 진행", 1100, 72, ui_colour("gold"), true);
+            "", 1100, 72, ui_colour("gold"), true);
         if (!instance_exists(obj_tutorial5) || !_t5_unlocked) return;
     }
 
@@ -423,6 +431,7 @@ function ui_draw_tutorial_overlay() {
         ui_draw_tutorial_bubble(1296, 230, 288, 220, 5, "당겨서 발사", obj_tutorial5.text_string,
             "최대 당김 거리 · 5칸", _t5_target_x, _t5_target_y, ui_colour("cyan"), true);
     }
+
 }
 
 function ui_draw_arena() {
