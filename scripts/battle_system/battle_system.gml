@@ -1,5 +1,7 @@
 function battle_start(_controller) {
     with (_controller) {
+        // Include any room-authored or setup-phase Pokemon in the stage limit.
+        player_deployments_used = max(player_deployments_used, board_player_placed_count());
         start_turn_system();
         turn_system_started = true;
     }

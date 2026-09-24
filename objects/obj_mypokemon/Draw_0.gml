@@ -8,16 +8,13 @@ var _by1 = y;
 var _bx2 = x + 64;
 var _by2 = y + 64;
 var _collection_locked = instance_exists(obj_tutorial1);
-var _placement_enabled = !obj_controller.battle_ready
-    && !obj_controller.turn_system_started;
-var _hover = !_collection_locked
-    && point_in_rectangle(mouse_x, mouse_y, _bx1, _by1, _bx2, _by2);
-
-// Team building begins only after the first partner has been chosen.
-if (_collection_locked && pokeball_opened) {
-    pokeball_opened = false;
-    clear_pokeball_instances();
-}
+var _deployments_used = max(obj_controller.player_deployments_used, board_player_placed_count());
+var _deployment_slots = max(0, 3 - _deployments_used);
+var _placement_enabled = !_collection_locked
+    && _deployment_slots > 0
+    && obj_controller.state != BattleState.PLAYER_WIN
+    && obj_controller.state != BattleState.ENEMY_WIN;
+var _hover = point_in_rectangle(mouse_x, mouse_y, _bx1, _by1, _bx2, _by2);
 
 if (_hover && mouse_check_button_pressed(mb_left)) {
     pokeball_opened = !pokeball_opened;
@@ -28,9 +25,7 @@ if (_hover && mouse_check_button_pressed(mb_left)) {
     }
 }
 
-var _button_colour = _collection_locked
-    ? ui_colour("muted")
-    : (_hover ? ui_colour("ivory") : ui_colour("cyan"));
+var _button_colour = _hover ? ui_colour("ivory") : ui_colour("cyan");
 ui_draw_panel(_bx1, _by1, _bx2, _by2, 9, _button_colour);
 draw_set_colour(_button_colour);
 draw_circle(x + 32, y + 27, 15, true);
@@ -86,7 +81,7 @@ if (pokeball_opened) {
     draw_set_colour(ui_colour("muted"));
     draw_text(_drawer_x1 + 14, _drawer_y1 + 43,
         _placement_enabled
-            ? "드래그해 내 진영에 배치 · 최대 3마리"
+            ? "드래그해 내 진영에 배치 · 남은 배치 " + string(_deployment_slots) + "마리"
             : "포켓몬에 마우스를 올려 정보를 확인하세요");
     draw_set_halign(fa_right);
     draw_set_colour(ui_colour("cyan"));

@@ -8,7 +8,7 @@ if (is_placing && team_is_player(owner)) {
     var _target_x = board_snap(clamp(mouse_x, global.board.left, global.board.right), global.board.left);
     var _target_y = board_snap(clamp(mouse_y, global.board.top, global.board.bottom), global.board.top);
     var _target_valid = board_is_player_area(mouse_y)
-        && board_player_placed_count() < 3
+        && max(obj_controller.player_deployments_used, board_player_placed_count()) < 3
         && board_position_is_free(_target_x, _target_y, id);
     var _target_colour = _target_valid ? ui_colour("cyan") : ui_colour("coral");
 

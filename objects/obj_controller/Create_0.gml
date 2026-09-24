@@ -12,6 +12,9 @@ balls = []
 
 turn_index = 0;
 generation = 1;
+// Counts every player Pokemon deployed in this stage, including the initial
+// setup. Knocked-out Pokemon do not refund a slot.
+player_deployments_used = 0;
 low_friction_round = 6;
 state = BattleState.IDLE;
 turn_advanced_by_removal = false;

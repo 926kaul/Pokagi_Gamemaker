@@ -1,5 +1,7 @@
-if (!obj_controller.turn_system_started
-    && !obj_controller.battle_ready
+if (!instance_exists(obj_tutorial1)
+    && max(obj_controller.player_deployments_used, board_player_placed_count()) < 3
+    && obj_controller.state != BattleState.PLAYER_WIN
+    && obj_controller.state != BattleState.ENEMY_WIN
     && team_is_player(owner)
     && !placed) 
 {

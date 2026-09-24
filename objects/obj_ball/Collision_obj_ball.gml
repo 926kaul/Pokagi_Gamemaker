@@ -1,6 +1,9 @@
 // ----------------------------------------
 // 충돌 상대를 o라 하자
 // ----------------------------------------
+// Collection icons being dragged onto the arena are not combat pieces until
+// their placement is accepted on mouse release.
+if (!placed || !other.placed) exit;
 if(!moving) exit;
 var o = other;
 

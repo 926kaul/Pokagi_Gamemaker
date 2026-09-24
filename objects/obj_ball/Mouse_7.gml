@@ -10,17 +10,24 @@ if (is_placing && team_is_player(owner)) {
     gx = board_snap(gx, global.board.left);
     gy = board_snap(gy, global.board.top);
 
-	// Preview and release share the same occupancy/count helpers.
+	// Preview and release share the same occupancy helper. The stage-wide
+	// deployment counter does not decrease when a Pokemon is knocked out.
 	var position_free = board_position_is_free(gx, gy, id);
-	var player_count = board_player_placed_count();
+	var deployments_used = max(obj_controller.player_deployments_used, board_player_placed_count());
+	var deployment_slot_free = deployments_used < 3;
 
     // 아래 절반만 허용
-    // 현재 배치 수를 세고 난 뒤 새 포켓몬을 추가하므로 3 미만이어야 합니다.
-    if (board_is_player_area(mouse_y) && player_count < 3 && position_free) {
+    if (board_is_player_area(mouse_y) && deployment_slot_free && position_free) {
         x = gx;
         y = gy;
         placed = true;
 		depth = 0;
+		obj_controller.player_deployments_used = deployments_used + 1;
+
+		// Pokemon deployed after START must join the live turn order as well.
+		if (obj_controller.turn_system_started) {
+			array_push(obj_controller.balls, id);
+		}
 		
     } else {
         // Collection icons always return to their exact grid slot. Keeping a

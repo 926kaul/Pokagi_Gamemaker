@@ -48,11 +48,22 @@ if (selection_done) {
 
     // player를 오른쪽 대기 위치로 이동
     with (obj_ball) {
-        if (team_is_player(owner)) {
+		// The collection can be inspected during the starter tutorial. Do not
+		// mistake its temporary grid icons for the selected starter.
+        if (team_is_player(owner) && !has_collection_home) {
 			profile_catch(p);
 			instance_destroy();
         }
     }
+
+	// If the collection was open while the starter was selected, rebuild it
+	// so the newly caught partner appears immediately.
+	with (obj_mypokemon) {
+		if (pokeball_opened) {
+			clear_pokeball_instances();
+			create_pokeball_instances();
+		}
+	}
 
     // enemy 자동 배치
     with (obj_ball) {
