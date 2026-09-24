@@ -278,5 +278,5 @@ function load_my_pokes() {
 
 /// @function set_master_volume(volume)
 function set_master_volume(_volume) {
-    audio_group_set_gain(audiogroup_default, _volume, 0); 
+    audio_group_set_gain(audiogroup_default, clamp(_volume, 0, 1), 0);
 }

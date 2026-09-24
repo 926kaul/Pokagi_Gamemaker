@@ -215,51 +215,37 @@ stage_update_display(room);
 
 
 
-// obj_controller Step Event
+// Bottom HUD volume slider. Use the same geometry as Draw GUI and keep dragging
+// after the pointer leaves the thin track, until the mouse button is released.
+var _volume_ui_hidden = instance_exists(obj_mypokemon)
+    && obj_mypokemon.pokeball_opened
+    && !battle_ready;
+var _volume_mouse_x = device_mouse_x_to_gui(0);
+var _volume_mouse_y = device_mouse_y_to_gui(0);
+var _volume_y = display_get_gui_height() - 57;
+var _volume_hit = point_in_rectangle(
+    _volume_mouse_x, _volume_mouse_y,
+    volume_bar_x - 6, _volume_y - 8,
+    volume_bar_x + volume_bar_width + 6, _volume_y + volume_bar_height + 8
+);
 
-var _x = 750;
-var _y = 890;
-var _w = 100;
-var _h = 10;
+if (_volume_ui_hidden) {
+    volume_dragging = false;
+} else {
+    if (mouse_check_button_pressed(mb_left) && _volume_hit) {
+        volume_dragging = true;
+    }
 
-// obj_controller Step Event
+    if (!mouse_check_button(mb_left)) {
+        volume_dragging = false;
+    }
 
-if (instance_exists(obj_controller)) { // 컨트롤러가 존재할 때만 실행
-    
-    // 1. Draw GUI와 동일한 좌표 및 크기 계산 (변수명 겹침 방지)
-    var _gui_w = display_get_gui_width();
-    var _gui_h = display_get_gui_height();
-    
-    var _v_bar_w = 150; 
-    var _v_bar_h = 10;
-    var _v_padding = 40;
-
-    var _v_draw_x = _gui_w - _v_bar_w - _v_padding;
-    var _v_draw_y = _gui_h - _v_bar_h - _v_padding - 20;
-
-    // 2. ✨ 중요: GUI 기준 마우스 좌표 가져오기
-    var _m_gui_x = device_mouse_x_to_gui(0);
-    var _m_gui_y = device_mouse_y_to_gui(0);
-
-    // 3. 마우스 오버 확인 (GUI 좌표 기준)
-    var _vol_mouse_over = (_m_gui_x >= _v_draw_x && _m_gui_x <= _v_draw_x + _v_bar_w && 
-                           _m_gui_y >= _v_draw_y && _m_gui_y <= _v_draw_y + _v_bar_h);
-
-    // 4. 클릭 및 드래그 처리
-    if (mouse_check_button(mb_left) && _vol_mouse_over) {
-        
-        // 마우스의 GUI X 위치를 볼륨 바 내의 상대적 위치로 변환
-        var _v_relative_x = _m_gui_x - _v_draw_x;
-        
-        // 비율 계산 (0.0 ~ 1.0) 및 클램프
-        var _v_new_vol = clamp(_v_relative_x / _v_bar_w, 0.0, 1.0);
-        
-        // 전역 변수 업데이트 및 실제 볼륨 적용
-        global.master_volume = _v_new_vol;
-        
-        // 해당 함수가 정의되어 있는지 확인 후 호출
-        if (script_exists(set_master_volume) || asset_get_index("set_master_volume") != -1) {
-            set_master_volume(global.master_volume*0.5);
-        }
+    if (volume_dragging) {
+        global.master_volume = clamp(
+            (_volume_mouse_x - volume_bar_x) / volume_bar_width,
+            0,
+            1
+        );
+        set_master_volume(global.master_volume);
     }
 }

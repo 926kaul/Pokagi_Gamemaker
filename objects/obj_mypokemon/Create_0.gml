@@ -1,17 +1,20 @@
 my_pokes = array_create(151, 0);
 load_my_pokes();
 
-depth = -1;
+// This menu owns the top-most GUI drawer when opened.
+depth = -100000;
 
 pokeball_opened = false;
+x = room_width - 104;
+y = 760;
 
 create_pokeball_instances = function() {
     
     // --- 격자 설정 값 ---
-    var _start_x = 100; // 창 내부 시작 X 좌표
-    var _start_y = 60; // 창 내부 시작 Y 좌표
-    var _step = 40;    // 포켓볼 간 간격 (40px)
-    var _cols = 20;    // 한 줄의 최대 포켓볼 수
+    var _start_x = 76;  // balanced side margins inside the wide drawer
+    var _start_y = 150; // clear space below the drawer header
+    var _step = 38;     // even horizontal and vertical breathing room
+    var _cols = 22;     // seven rows fit in the upper half
 
     // --- 포켓볼 생성 루프 ---
     for (var i = 0; i < 151; i++) {

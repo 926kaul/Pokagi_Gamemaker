@@ -23,16 +23,35 @@ link_sprite = github_sprite;
 var _win_w = (os_browser != browser_not_a_browser) ? browser_width : display_get_width();
 var _win_h = (os_browser != browser_not_a_browser) ? browser_height : display_get_height();
 
-// 2. 95% 영역 내 최대 정사각형 크기 계산
-var _square_size = min(_win_w * 0.95, _win_h * 0.95);
+// 2. Fit a 4:3 window inside 95% of the available display.
+var _available_w = floor(_win_w * 0.95);
+var _available_h = floor(_win_h * 0.95);
+var _window_w = _available_w;
+var _window_h = floor(_window_w * 3 / 4);
+if (_window_h > _available_h) {
+    _window_h = _available_h;
+    _window_w = floor(_window_h * 4 / 3);
+}
 
-// 3. 윈도우 크기 설정
-window_set_size(_square_size, _square_size);
+// 3. Apply the widescreen tabletop window.
+window_set_size(_window_w, _window_h);
 
+// Render the 960x960 logical board at 2x resolution. On very large displays
+// this can move to 3x while gameplay coordinates remain unchanged.
+global.render_scale = min(_win_w, _win_h) >= room_width * 3 ? 3 : 2;
+global.render_width = room_width * global.render_scale;
+global.render_height = room_height * global.render_scale;
+
+// Keep the source pixel art crisp. Vector UI and SDF fonts scale independently.
+gpu_set_texfilter(false);
 
 // GUI는 실제 창 픽셀이 아니라 게임 보드 좌표계(960×960)를 사용합니다.
 // 그래야 창이 커져도 스테이지와 글자/아이콘이 같은 비율로 확대됩니다.
 display_set_gui_size(room_width, room_height);
+
+// Persistent utility controls live in the dedicated right-side rail.
+x = room_width - 144;
+y = 24;
 
 
 

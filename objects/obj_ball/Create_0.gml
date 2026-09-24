@@ -1,5 +1,8 @@
 sprite_index = Pokemon;
 image_speed = 0;
+base_image_scale = 40 / sprite_get_width(sprite_index);
+image_xscale = base_image_scale;
+image_yscale = base_image_scale;
 
 // 배치 드래그
 is_placing = false;

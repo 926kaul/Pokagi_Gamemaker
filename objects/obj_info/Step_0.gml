@@ -1,3 +1,13 @@
+// The application surface controls world-render resolution independently of
+// the 960x960 room coordinate system. Resizing is deferred until the surface
+// exists and GameMaker applies it on the next draw frame.
+if (surface_exists(application_surface)) {
+    if (surface_get_width(application_surface) != global.render_width
+        || surface_get_height(application_surface) != global.render_height) {
+        surface_resize(application_surface, global.render_width, global.render_height);
+    }
+}
+
 if (info_opened) {
     // 1. Draw GUI와 동일한 좌표 계산식 적용
     var _gui_w = display_get_gui_width();

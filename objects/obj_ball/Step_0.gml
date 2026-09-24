@@ -1,8 +1,8 @@
 image_index = pokemon_id-1;
 stats = global.poke_stats[pokemon_id];
 if(placed){
-	image_xscale = stats.size;
-	image_yscale = stats.size;
+	image_xscale = base_image_scale * stats.size;
+	image_yscale = base_image_scale * stats.size;
 }
 
 if (is_placing) {

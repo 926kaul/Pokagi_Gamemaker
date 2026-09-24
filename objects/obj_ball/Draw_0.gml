@@ -1,69 +1,81 @@
-draw_self();
-if(team_is_enemy(owner)) image_blend = make_colour_rgb(255, 191, 191);;
+var _radius = max(16, sprite_get_width(sprite_index) * abs(image_xscale) * 0.5);
+var _team_colour = ui_colour("gold");
+if (team_is_player(owner)) _team_colour = ui_colour("cyan");
+if (team_is_enemy(owner)) _team_colour = ui_colour("coral");
 
-// 샷 조준 중이면 라인 그리기
-if (is_shooting) {
+// Show the exact board intersection that will be used when placement ends.
+if (is_placing && team_is_player(owner)) {
+    var _target_x = board_snap(clamp(mouse_x, global.board.left, global.board.right), global.board.left);
+    var _target_y = board_snap(clamp(mouse_y, global.board.top, global.board.bottom), global.board.top);
+    var _target_valid = board_is_player_area(mouse_y)
+        && board_player_placed_count() < 3
+        && board_position_is_free(_target_x, _target_y, id);
+    var _target_colour = _target_valid ? ui_colour("cyan") : ui_colour("coral");
 
-    var max_len = global.board.max_pull;
-
-    // 마우스로부터 당긴 벡터
-    var dx = mouse_x - x;
-    var dy = mouse_y - y;
-
-    var dist = point_distance(x, y, mouse_x, mouse_y);
-	var lx, ly;
-
-    // 방향 유지하며 길이 제한
-    if (dist > max_len) {
-        var dir = point_direction(x, y, mouse_x, mouse_y);
-        lx = x + lengthdir_x(max_len, dir);
-        ly = y + lengthdir_y(max_len, dir);
-    } else {
-        // 200 이하일 때는 그대로 표시
-        lx = mouse_x;
-        ly = mouse_y;
-    }
-
-    draw_set_color(c_lime);
-    draw_line(x, y, lx, ly);
-    draw_set_color(c_white);
+    draw_set_colour(_target_colour);
+    draw_set_alpha(0.10);
+    draw_circle(_target_x, _target_y, 20, false);
+    draw_set_alpha(0.18);
+    draw_circle(_target_x, _target_y, 12, false);
+    draw_set_alpha(0.34);
+    draw_circle(_target_x, _target_y, 6, false);
+    draw_set_alpha(1);
+    ui_draw_diamond(_target_x, _target_y, 5, _target_colour, false);
 }
 
+// A soft ground shadow improves separation without enclosing the creature's
+// silhouette or competing with its individual design.
+draw_set_alpha(0.35);
+draw_set_colour(c_black);
+draw_ellipse(x - _radius - 3, y - _radius + 5, x + _radius + 3, y + _radius + 9, false);
 
+draw_set_alpha(1);
+image_blend = c_white;
+draw_self();
 
-// 디버그 궤적 그리기
-draw_set_alpha(0.6);  
-draw_set_color(c_aqua);
+// This is the deliberate pull vector, not a predicted trajectory.
+if (is_shooting) {
+    var _max_len = global.board.max_pull;
+    var _distance = point_distance(x, y, mouse_x, mouse_y);
+    var _line_x = mouse_x;
+    var _line_y = mouse_y;
+    if (_distance > _max_len) {
+        var _direction = point_direction(x, y, mouse_x, mouse_y);
+        _line_x = x + lengthdir_x(_max_len, _direction);
+        _line_y = y + lengthdir_y(_max_len, _direction);
+    }
 
-for (var i = 1; i < array_length(trail); i++) {
-    var p1 = trail[i-1];
-    var p2 = trail[i];
-    draw_line(p1[0], p1[1], p2[0], p2[1]);
+    draw_set_alpha(0.35);
+    draw_set_colour(ui_colour("ink"));
+    draw_line_width(x, y, _line_x, _line_y, 6);
+    draw_set_alpha(1);
+    draw_set_colour(_team_colour);
+    draw_line_width(x, y, _line_x, _line_y, 2);
+    draw_circle(_line_x, _line_y, 5, true);
+}
+
+// Motion trail communicates speed after a shot without revealing its future path.
+if (moving && array_length(trail) > 1) {
+    draw_set_alpha(0.32);
+    draw_set_colour(_team_colour);
+    for (var _i = 1; _i < array_length(trail); _i++) {
+        var _previous = trail[_i - 1];
+        var _current = trail[_i];
+        draw_line(_previous[0], _previous[1], _current[0], _current[1]);
+    }
+    draw_set_alpha(1);
+}
+
+if (current_turn && !moving) {
+    ui_draw_diamond(x, y - _radius - 15, 6, ui_colour("ivory"), true);
+    draw_set_font(Font5);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_bottom);
+    draw_set_colour(c_black);
+    draw_text(x, y - _radius - 24, team_is_player(owner) ? "READY" : "RIVAL");
 }
 
 draw_set_alpha(1);
-draw_set_color(c_white);
-
-
-if (current_turn == true && !moving) {
-    
-    // 1. 텍스트 설정
-	draw_set_font(Font3);
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_top);
-    draw_set_color(make_colour_rgb(127, 255, 0));
-    
-    // 2. 텍스트 그리기
-    // x: 공의 중앙 (x)
-    // y: 공의 중앙에서 공 높이의 절반 + 약간의 여백 (y + sprite_height/2 + 5)
-    draw_text(
-        x, 
-        y + sprite_height / 2 + 5, 
-        "TURN"
-    );
-
-    // 3. 설정 초기화 (선택 사항이지만 좋은 습관)
-    draw_set_halign(fa_left);
-    draw_set_valign(fa_top);
-}
-
+draw_set_colour(c_white);
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);

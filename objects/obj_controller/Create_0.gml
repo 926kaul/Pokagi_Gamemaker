@@ -1,6 +1,10 @@
 // 선택 상태
 selection_done = false;
 
+// The remaster board is procedural so its art always matches gameplay coordinates.
+depth = 100;
+if (layer_exists("board_layer")) layer_set_visible("board_layer", false);
+
 // 턴/세대 시스템 변수
 turn_system_started = false;
 battle_ready = false;     // Start 버튼이 true로 만듦
@@ -25,5 +29,11 @@ if(room = Room1){
 }
 
 alarm[0] = 1;
-set_master_volume(global.master_volume*0.5);
 global.sound_cooldown = false;
+
+// Bottom HUD volume control state. Draw and input share these exact values.
+volume_bar_x = 740;
+volume_bar_width = 170;
+volume_bar_height = 10;
+volume_dragging = false;
+set_master_volume(global.master_volume);
