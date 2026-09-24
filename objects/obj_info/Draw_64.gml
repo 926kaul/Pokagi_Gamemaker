@@ -73,9 +73,10 @@ if (info_opened) {
     var _link_x = _x2 - _padding - _icon_width;
     var _link_y = _y2 - _padding - _icon_height;
     
-    // 마우스 오버 체크 (GUI 좌표 기준으로 체크해야 함)
-    var _m_x = device_mouse_x_to_gui(0);
-    var _m_y = device_mouse_y_to_gui(0);
+    // GUI and room share the same logical coordinate system. Avoid physical
+    // canvas coordinates here so browser DPR does not offset the hit target.
+    var _m_x = mouse_x;
+    var _m_y = mouse_y;
     
     var _hover = (_m_x >= _link_x && _m_x <= _link_x + _icon_width && 
                   _m_y >= _link_y && _m_y <= _link_y + _icon_height);

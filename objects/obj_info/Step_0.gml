@@ -69,9 +69,9 @@ if (info_opened) {
     var _link_x = _x2 - _padding - _icon_width;
     var _link_y = _y2 - _padding - _icon_height;
 
-    // 3. GUI 기준 마우스 좌표 가져오기
-    var _m_x = device_mouse_x_to_gui(0);
-    var _m_y = device_mouse_y_to_gui(0);
+    // 3. 1600x960 논리 좌표 기준 마우스 위치
+    var _m_x = mouse_x;
+    var _m_y = mouse_y;
 
     // 4. Hover 상태 확인 및 클릭 처리
     if (_m_x >= _link_x && _m_x <= _link_x + _icon_width && 

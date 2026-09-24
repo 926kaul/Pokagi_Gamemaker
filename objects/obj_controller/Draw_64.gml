@@ -2,6 +2,10 @@
 var _gui_w = display_get_gui_width();
 var _gui_h = display_get_gui_height();
 
+// Reset once per frame; individual interactive elements may opt into the hand
+// cursor later in their draw order without leaving it stuck after mouse-out.
+window_set_cursor(cr_default);
+
 var _ivory = ui_colour("ivory");
 var _ink = ui_colour("ink");
 var _coral = ui_colour("coral");
@@ -179,8 +183,8 @@ if (state == BattleState.ENEMY_WIN || state == BattleState.PLAYER_WIN) {
     draw_text(800, 535, state == BattleState.PLAYER_WIN ? "STAGE CLEARED" : "CLICK TO RETRY");
 
     if (state == BattleState.ENEMY_WIN) {
-        var _mouse_x = device_mouse_x_to_gui(0);
-        var _mouse_y = device_mouse_y_to_gui(0);
+        var _mouse_x = mouse_x;
+        var _mouse_y = mouse_y;
         if (point_in_rectangle(_mouse_x, _mouse_y, 530, 300, 1070, 660)) {
             window_set_cursor(cr_handpoint);
             if (mouse_check_button_pressed(mb_left)) room_goto(Room1);

@@ -43,8 +43,10 @@ if (menu_opened) {
     var _data_x = _table_x + _cell;
     var _data_y = _table_y + _cell;
 
-    var _mx = device_mouse_x_to_gui(0);
-    var _my = device_mouse_y_to_gui(0);
+    // UI and room coordinates both use the fixed 1600x960 logical space.
+    // mouse_x/y remain correct when HTML5 enlarges only the backing store.
+    var _mx = mouse_x;
+    var _my = mouse_y;
     var _hover_atk = 0;
     var _hover_def = 0;
     if (point_in_rectangle(

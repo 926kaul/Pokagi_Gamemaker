@@ -1,17 +1,14 @@
 if (!is_active) {
     flying_opened = false;
+    modal_open_guard = false;
     exit;
 }
 
-var _mx = device_mouse_x_to_gui(0);
-var _my = device_mouse_y_to_gui(0);
-var _gui_x = (x / room_width) * display_get_gui_width();
-var _gui_y = (y / room_height) * display_get_gui_height();
+var _mx = mouse_x;
+var _my = mouse_y;
 
 if (!flying_opened) {
-    if (mouse_check_button_pressed(mb_left) && point_in_circle(_mx, _my, _gui_x, _gui_y, 40)) {
-        flying_opened = true;
-    }
+    modal_open_guard = false;
 } else {
     var _gui_w = display_get_gui_width();
     var _gui_h = display_get_gui_height();
@@ -42,6 +39,15 @@ if (!flying_opened) {
     var _btn_w = ((_x2 - _x1) - _padding * 6) / _cols;
     var _btn_h = ((_y2 - _content_y) - _padding * 3) / 2;
     var _any_button_clicked = false;
+    var _page_click = false;
+
+    // The physical click that opened the page must not also select the stage
+    // underneath the wing button. Accept page clicks only after release.
+    if (modal_open_guard) {
+        if (!mouse_check_button(mb_left)) modal_open_guard = false;
+    } else {
+        _page_click = mouse_check_button_pressed(mb_left);
+    }
 
     for (var _i = 0; _i < array_length(_rooms); _i++) {
         var _col = _i mod _cols;
@@ -66,13 +72,14 @@ if (!flying_opened) {
         draw_set_colour(_hover ? ui_colour("ivory") : ui_colour("muted"));
         draw_text((_bx1 + _bx2) * 0.5 + 8, (_by1 + _by2) * 0.5, "STAGE " + _display_number);
 
-        if (_hover && mouse_check_button_pressed(mb_left)) {
+        if (_hover && _page_click) {
             _any_button_clicked = true;
+            flying_opened = false;
             room_goto(_rooms[_i]);
         }
     }
 
-    if (!_any_button_clicked && mouse_check_button_pressed(mb_left)
+    if (!_any_button_clicked && _page_click
         && !point_in_rectangle(_mx, _my, _x1, _y1, _x2, _y2)) {
         flying_opened = false;
     }
