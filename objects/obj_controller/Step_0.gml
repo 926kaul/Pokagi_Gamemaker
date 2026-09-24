@@ -245,10 +245,26 @@ if (!low_friction_tutorial_seen
     && battle_ready
     && generation == low_friction_round) {
     low_friction_tutorial_active = true;
+    low_friction_tutorial_open_guard = true;
 }
 
-// Keep the warning throughout round 6 and dismiss it only when round 7 begins.
+// Ignore a click already held when the warning appears. After release, one
+// click anywhere outside the bubble dismisses it for the rest of this battle.
+if (low_friction_tutorial_active) {
+    if (low_friction_tutorial_open_guard) {
+        if (!mouse_check_button(mb_left)) {
+            low_friction_tutorial_open_guard = false;
+        }
+    } else if (mouse_check_button_pressed(mb_left)
+        && !point_in_rectangle(mouse_x, mouse_y, 350, 126, 780, 296)) {
+        low_friction_tutorial_seen = true;
+        low_friction_tutorial_active = false;
+    }
+}
+
+// Round progression remains a fallback dismissal path.
 if (low_friction_tutorial_active && generation > low_friction_round) {
     low_friction_tutorial_seen = true;
     low_friction_tutorial_active = false;
+    low_friction_tutorial_open_guard = false;
 }

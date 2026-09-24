@@ -20,6 +20,7 @@ turn_advanced_by_removal = false;
 // round 6 warning again even when it starts in the same game session.
 low_friction_tutorial_seen = false;
 low_friction_tutorial_active = false;
+low_friction_tutorial_open_guard = false;
 low_friction_tutorial_text = "라운드 6부터 마찰력이 감소합니다.\n포켓몬의 이동이 오래 이어지니 세기와 각도를 조절하세요.";
 
 if(room = Room1){

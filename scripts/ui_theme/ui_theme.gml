@@ -338,7 +338,7 @@ function ui_draw_tutorial_overlay() {
     // over any older tutorial instance that may still be lingering.
     if (obj_controller.low_friction_tutorial_active && obj_controller.battle_ready) {
         ui_draw_tutorial_bubble(350, 126, 430, 170, 6, "저마찰 환경", obj_controller.low_friction_tutorial_text,
-            "속도가 더 오래 유지됩니다", 422, 88, ui_colour("coral"), true);
+            "말풍선 밖을 클릭해 닫기", 422, 88, ui_colour("coral"), true);
         return;
     }
 
