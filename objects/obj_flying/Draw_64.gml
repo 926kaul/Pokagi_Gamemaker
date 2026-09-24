@@ -9,6 +9,14 @@ var _my = mouse_y;
 
 if (!flying_opened) {
     modal_open_guard = false;
+    if (mouse_check_button_pressed(mb_left)
+        && point_in_circle(_mx, _my, x, y, 40)) {
+        flying_opened = true;
+        modal_open_guard = true;
+        if (instance_exists(obj_menu)) obj_menu.menu_opened = false;
+        if (instance_exists(obj_info)) obj_info.info_opened = false;
+        if (instance_exists(obj_settings)) obj_settings.settings_opened = false;
+    }
 } else {
     var _gui_w = display_get_gui_width();
     var _gui_h = display_get_gui_height();

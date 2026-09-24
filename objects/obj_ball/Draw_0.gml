@@ -25,8 +25,19 @@ if (is_placing && team_is_player(owner)) {
 
 // A soft ground shadow improves separation without enclosing the creature's
 // silhouette or competing with its individual design.
-draw_set_alpha(0.35);
-draw_set_colour(c_black);
+var _shadow_colour = c_black;
+var _shadow_alpha = 0.35;
+// Tint only the shadow so teams remain readable without altering the Pokemon
+// artwork or hiding each creature's individual palette.
+if (team_is_player(owner)) {
+    _shadow_colour = merge_colour(c_black, ui_colour("cyan"), 0.68);
+    _shadow_alpha = 0.48;
+} else if (team_is_enemy(owner)) {
+    _shadow_colour = merge_colour(c_black, ui_colour("coral"), 0.68);
+    _shadow_alpha = 0.48;
+}
+draw_set_alpha(_shadow_alpha);
+draw_set_colour(_shadow_colour);
 draw_ellipse(x - _radius - 3, y - _radius + 5, x + _radius + 3, y + _radius + 9, false);
 
 draw_set_alpha(1);

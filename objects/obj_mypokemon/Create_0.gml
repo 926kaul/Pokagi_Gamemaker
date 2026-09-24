@@ -40,6 +40,11 @@ create_pokeball_instances = function() {
 			var _collection_scale = collection_icon_size / sprite_get_width(_ball_inst.sprite_index);
 			_ball_inst.image_xscale = _collection_scale;
 			_ball_inst.image_yscale = _collection_scale;
+            _ball_inst.has_collection_home = true;
+            _ball_inst.collection_home_x = _x;
+            _ball_inst.collection_home_y = _y;
+            _ball_inst.original_x = _x;
+            _ball_inst.original_y = _y;
         }
     }
 };

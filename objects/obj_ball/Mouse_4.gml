@@ -3,8 +3,10 @@ if (!obj_controller. turn_system_started
     && !placed) 
 {
     is_placing = true;
-	original_x = x;
-	original_y = y;
+	if (!has_collection_home) {
+		original_x = x;
+		original_y = y;
+	}
 }
 
 

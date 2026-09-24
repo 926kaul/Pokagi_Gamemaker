@@ -54,8 +54,10 @@ if (pokeball_opened && !obj_controller.battle_ready) {
             _hovered_pokemon = pokemon_id;
             if (mouse_check_button_pressed(mb_left)) {
                 is_placing = true;
-                original_x = x;
-                original_y = y;
+                if (!has_collection_home) {
+                    original_x = x;
+                    original_y = y;
+                }
             }
         }
     }

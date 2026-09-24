@@ -24,6 +24,11 @@ current_turn = false;
 
 original_x = x;
 original_y = y;
+// Collection icons receive a permanent home slot after creation. This is
+// separate from original_x/y, which other drag flows may legitimately update.
+has_collection_home = false;
+collection_home_x = x;
+collection_home_y = y;
 
 //탈락 관련
 is_dead = false;

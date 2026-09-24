@@ -23,9 +23,11 @@ if (is_placing && team_is_player(owner)) {
 		depth = 0;
 		
     } else {
-        // 원래 자리 복구
-        x = original_x;
-        y = original_y;
+        // Collection icons always return to their exact grid slot. Keeping a
+        // dedicated home coordinate prevents drag event ordering from
+        // overwriting the return point with an intermediate mouse position.
+        x = has_collection_home ? collection_home_x : original_x;
+        y = has_collection_home ? collection_home_y : original_y;
     }
 }
 
