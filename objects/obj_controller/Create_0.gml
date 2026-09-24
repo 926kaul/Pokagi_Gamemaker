@@ -8,7 +8,8 @@ balls = []
 
 turn_index = 0;
 generation = 1;
-state = "idle";   // "idle" → 아직 게임 시작 전
+state = BattleState.IDLE;
+turn_advanced_by_removal = false;
 
 if(room = Room1){
 	// 초기 스타팅 3개 생성

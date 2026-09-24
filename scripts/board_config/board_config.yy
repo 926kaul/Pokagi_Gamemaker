@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"board_config",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"board_config",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

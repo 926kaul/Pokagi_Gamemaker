@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"battle_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"battle_system",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

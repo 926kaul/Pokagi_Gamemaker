@@ -88,7 +88,7 @@ if (start_i < 0) start_i = 0;
 if (start_i >= len) start_i = len - 1;
 
 
-if (state == "enemy_win") {
+    if (state == BattleState.ENEMY_WIN) {
     var _text = "GAME\n\nOVER";
 
     // 1. 텍스트 그리기
@@ -129,7 +129,7 @@ if (state == "enemy_win") {
     }
 }
 
-else if (state == "player_win") {
+else if (state == BattleState.PLAYER_WIN) {
 	draw_set_font(Font1);
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
@@ -153,7 +153,7 @@ else if(battle_ready){
 	        draw_x, draw_y,
 	        0.5, 0.5,
 	        0, c_white, 1);
-		if(b.owner == "enemy"){
+		if(team_is_enemy(b.owner)){
 			draw_sprite_ext(b.sprite_index, b.image_index,
 	        draw_x, draw_y,
 	        0.5, 0.5,

@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"stage_database",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"stage_database",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

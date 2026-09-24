@@ -41,7 +41,7 @@ create_pokeball_instances = function() {
 
 clear_pokeball_instances = function(){
 	with (obj_ball) {
-	    if (owner == "player" && !placed) {
+	    if (team_is_player(owner) && !placed) {
 	        instance_destroy();
 	    }
 	}

@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"game_types",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"game_types",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

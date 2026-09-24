@@ -1,6 +1,16 @@
 depth = -2;
+// Persistent UI objects also exist as Room1 instances. Keep the existing one
+// when returning to Room1 so input and drawing never run twice.
+if (instance_number(object_index) > 1) {
+	instance_destroy();
+	exit;
+}
 info_opened = false;
-global.endclear = true;
+// 엔딩 플래그는 최초 실행에만 초기화합니다.
+// 이전에는 시작과 동시에 true가 되어 클리어 대사가 노출되었습니다.
+if (!variable_global_exists("endclear")) {
+	global.endclear = false;
+}
 
 link_url = "https://github.com/926kaul/Pokagi";
 link_is_hovered = false;
@@ -20,9 +30,9 @@ var _square_size = min(_win_w * 0.95, _win_h * 0.95);
 window_set_size(_square_size, _square_size);
 
 
-// 4. ✨ 가장 중요한 포인트: GUI 크기 재설정
-// 이걸 안 하면 화면은 커져도 GUI 좌표(버튼 클릭 등)는 옛날 크기에 머물러 있게 돼.
-display_set_gui_size(_square_size, _square_size);
+// GUI는 실제 창 픽셀이 아니라 게임 보드 좌표계(960×960)를 사용합니다.
+// 그래야 창이 커져도 스테이지와 글자/아이콘이 같은 비율로 확대됩니다.
+display_set_gui_size(room_width, room_height);
 
 
 

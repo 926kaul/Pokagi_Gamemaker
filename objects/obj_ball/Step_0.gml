@@ -43,12 +43,11 @@ if (array_length(trail) > trail_length) {
 // -------------------------------
 // 바둑판 밖 → 즉시 사망
 // -------------------------------
-if ((x < 120 || x > 840 || y < 120 || y > 840) && placed)
+if (!board_is_inside(x, y) && placed)
 {
     is_dead = true;
-	if(owner == "enemy"){
-		obj_mypokemon.my_pokes[pokemon_id-1] = 1;
-		if(pokemon_id == 150) obj_mypokemon.my_pokes[131] = 1;
-		save_my_pokes();
+	if(team_is_enemy(owner)){
+		profile_catch(pokemon_id);
+		if(pokemon_id == 150) profile_catch(132);
 	}
 }

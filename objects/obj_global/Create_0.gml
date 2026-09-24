@@ -1,4 +1,5 @@
 gpu_set_texfilter(false);
+board_config_initialize();
 
 // global.player_choice 변수가 아직 정의되지 않았다면 초기화합니다.
 if (!variable_global_exists("master_volume")) {
@@ -17,6 +18,11 @@ if (!variable_global_exists("player_choice")) {
 if (global.player_choice <= 0) { 
     global.player_choice = 0; 
 }
+
+// Species/type tables never change during a run. Do not rebuild 151 structs
+// every time a legacy stage room is entered.
+if (!variable_global_exists("poke_stats")) {
+global.poke_stats = [];
 
 var data = [
     [1, 1.5, 1.5, 15], [1.5, 2, 2, 18], [2, 2.5, 2.5, 22], [1, 1.5, 1.5, 18],
@@ -273,4 +279,6 @@ for (var i = 0; i < array_length(_evol_list); i++) {
     if (_array_index >= 0 && _array_index < 151) {
         global.evol[_array_index] = 1;
     }
+}
+
 }

@@ -1,5 +1,5 @@
 if (!obj_controller. turn_system_started
-    && owner == "player"
+    && team_is_player(owner)
     && !placed) 
 {
     is_placing = true;
@@ -12,7 +12,7 @@ if (!obj_controller. turn_system_started
 if (obj_controller.turn_system_started
     && current_turn
     && placed
-    && !moving && owner == "player")
+    && !moving && team_is_player(owner))
 {
     is_shooting = true;
     pull_start_x = x;       // 공의 위치

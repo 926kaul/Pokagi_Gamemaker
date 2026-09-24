@@ -1,0 +1,10 @@
+{
+  "$GMScript":"v1",
+  "%Name":"save_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"save_system",
+  "parent":{"name":"Pokagi","path":"Pokagi.yyp",},
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -19,8 +19,8 @@ if(!global.sound_cooldown && current_turn){
 	global.sound_cooldown = true;
 	if(typevs_result >= 4) audio_play_sound(alt_effective, 20, false);
 	else if(typevs_result >= 2) audio_play_sound(effective, 15, false);
+	else if(typevs_result <= 0.25) audio_play_sound(alt_weak, 1, false);
 	else if(typevs_result <= 0.5) audio_play_sound(weak, 5, false);
-	else if (typevs_result <= 0.25) audio_play_sound(alt_weak, 1, false);
 	else audio_play_sound(normal, 10, false);
 	alarm[1] = 10; //0.16sec
 }
@@ -29,6 +29,19 @@ if(!global.sound_cooldown && current_turn){
 var dx = x - o.x;
 var dy = y - o.y;
 var dist = point_distance(x, y, o.x, o.y);
+
+// 완전히 같은 위치에서 충돌하면 정규화 과정에서 0으로 나누게 됩니다.
+// 상대 속도를 우선 사용하고, 두 공 모두 정지한 경우에는 고정 축을 사용합니다.
+if (dist <= 0.0001) {
+	dx = velocity_x - o.velocity_x;
+	dy = velocity_y - o.velocity_y;
+	dist = point_distance(0, 0, dx, dy);
+	if (dist <= 0.0001) {
+		dx = 1;
+		dy = 0;
+		dist = 1;
+	}
+}
 
 // 정규화된 노멀 벡터
 var nx = dx / dist;

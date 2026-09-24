@@ -2,7 +2,7 @@
 // (B) 샷 드래그 끝 (발사)
 // Global Left Released 이벤트
 // ------------------------------
-if (is_shooting && owner == "player") {
+if (is_shooting && team_is_player(owner)) {
     is_shooting = false;
 
     // 1) 당긴 거리 계산
@@ -16,7 +16,7 @@ if (is_shooting && owner == "player") {
 	var X_actual = point_distance(sx, sy, mouse_x, mouse_y);
 
     // 2) 최대 당김 200px
-    var max_pull = 200;
+    var max_pull = global.board.max_pull;
     if (X > max_pull) {
         X = max_pull;
     }
@@ -50,5 +50,5 @@ if (is_shooting && owner == "player") {
 
     moving = true;
 
-    with (obj_controller) state = "moving";
+    with (obj_controller) state = BattleState.MOVING;
 }

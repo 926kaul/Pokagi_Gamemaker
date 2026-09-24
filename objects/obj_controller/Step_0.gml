@@ -24,8 +24,8 @@ if (selection_done) {
 
     // player를 오른쪽 대기 위치로 이동
     with (obj_ball) {
-        if (owner == "player") {
-			obj_mypokemon.my_pokes[p-1] = 1;
+        if (team_is_player(owner)) {
+			profile_catch(p);
 			instance_destroy();
         }
     }
@@ -34,8 +34,8 @@ if (selection_done) {
     with (obj_ball) {
         if (pokemon_id == enemy_id) {
             owner = "enemy";
-            x = 480;
-            y = 240;
+			x = global.board.center_x;
+			y = global.board.top + (global.board.grid_size * 3);
 			placed = true;
 			
 			//뮤로 변신
@@ -47,7 +47,7 @@ if (selection_done) {
 
     // 나머지 삭제
     with (obj_ball) {
-        if (owner == "none") {
+        if (owner == "none" || owner == Team.NONE) {
             instance_destroy();
         }
     }
@@ -62,8 +62,7 @@ if (selection_done) {
 //    → 실제 턴 시스템 시작
 //-----------------------------------------------------
 if (!turn_system_started && battle_ready) {
-    start_turn_system();        // 아래 정의함
-    turn_system_started = true;
+    battle_start(id);
 }
 
 //-----------------------------------------------------
@@ -72,7 +71,7 @@ if (!turn_system_started && battle_ready) {
 
 switch (state) {
 
-    case "wait_turn":
+    case BattleState.WAIT_TURN:
 		show_debug_message("wait_turn" + string(turn_index));
         var current = balls[turn_index];
 
@@ -80,26 +79,26 @@ switch (state) {
             current_turn = true;
         }
 
-        state = "player_input";   // 플레이어 입력 대기
+        state = BattleState.PLAYER_INPUT;
         break;
 	
-	case "player_input":
+	case BattleState.PLAYER_INPUT:
 		// show_debug_message("player_input" + string(turn_index));
 	    current = balls[turn_index];
-	    if (current.owner == "enemy") {
-	        state = "enemy_act";
+	    if (team_is_enemy(current.owner)) {
+	        state = BattleState.ENEMY_ACTION;
 	    }
 	    break;
 	
-	case "enemy_act":
+	case BattleState.ENEMY_ACTION:
 		show_debug_message("enemy_act" + string(turn_index));
 	    current = balls[turn_index];
 
 	    enemy_take_action(current);
-	    state = "moving";
+	    state = BattleState.MOVING;
 	    break;
 	
-	case "moving":
+	case BattleState.MOVING:
 	    var all_stopped = true;
 	    for (var i = 0; i < array_length(balls); i++) {
 	        var b = balls[i];
@@ -112,144 +111,38 @@ switch (state) {
 	        }
 	    }
 	    if (all_stopped)
-			state = "end_turn";
+			state = BattleState.END_TURN;
 		break;
 
-    case "end_turn":
+    case BattleState.END_TURN:
 		show_debug_message("end_turn" + string(turn_index));
-		var next_ball = balls[turn_index];
-		if (instance_exists(next_ball)) { // 인스턴스가 존재하는지 확인
-            with (next_ball) current_turn = false;
-        }
-		turn_index += 1;
+		// 현재 턴의 공이 장외로 제거되었다면 배열은 이미 다음 공을 가리킵니다.
+		if (!turn_advanced_by_removal) {
+			var next_ball = balls[turn_index];
+			if (instance_exists(next_ball)) {
+				with (next_ball) current_turn = false;
+			}
+			turn_index += 1;
+		} else {
+			turn_advanced_by_removal = false;
+		}
 		
 		if (turn_index >= array_length(balls)) {
             generation += 1;
 			
 	        // 중심 거리 정렬
 	        array_sort(balls, function(a, b) {
-	            return point_distance(b.x, b.y, 480, 480) - point_distance(a.x, a.y, 480, 480);
+	            return board_distance_from_center(b) - board_distance_from_center(a);
 	        });
 
 	        turn_index = 0;
         }
-		state = "wait_turn";
+		state = BattleState.WAIT_TURN;
 		break;
 	
-	case "player_win":
-		player_cnt = 0;
-		for (var i = 0; i < array_length(balls); i++) {
-			if (instance_exists(balls[i])) {
-			    if (balls[i].owner == "player"){
-					player_cnt += 1;
-					if (global.evol[balls[i].pokemon_id-1]) {
-						obj_mypokemon.my_pokes[balls[i].pokemon_id] = 1;
-						save_my_pokes();
-					}
-					
-				}
-				
-			}
-		}
-		switch(room){
-			case Room1:
-				room_goto(Room2);
-				state = "wait_turn";
-				break;
-			case Room2:
-				room_goto(Room2_1);
-				state = "wait_turn";
-				break;
-			case Room2_1:
-				room_goto(Room3);
-				state = "wait_turn";
-				break;
-			case Room3:
-				room_goto(Room3_1);
-				state = "wait_turn";
-				break;
-			case Room3_1:
-				room_goto(Room4);
-				state = "wait_turn";
-				break;
-			case Room4:
-				room_goto(Room4_1);
-				state = "wait_turn";
-				break;
-			case Room4_1:
-				room_goto(Room5);
-				state = "wait_turn";
-				break;
-			case Room5:
-				if(player_cnt < 3) room_goto(Room5_1);
-				else room_goto(Room5_2);
-				state = "wait_turn";
-				break;
-			case Room5_1:
-				room_goto(Room6);
-				state = "wait_turn";
-				break;
-			case Room5_2:
-				room_goto(Room6);
-				state = "wait_turn";
-				break;
-			case Room6:
-				room_goto(Room6_1);
-				state = "wait_turn";
-				break;
-			case Room6_1:
-				room_goto(Room7);
-				state = "wait_turn";
-				break;
-			case Room7:
-				room_goto(Room7_1);
-				state = "wait_turn";
-				break;
-			case Room7_1:
-				room_goto(Room8);
-				state = "wait_turn";
-				break;
-			case Room8:
-				if(player_cnt < 3) room_goto(Room8_1);
-				else room_goto(Room8_2);
-				state = "wait_turn";
-				break;
-			case Room8_1:
-				room_goto(Room9);
-				state = "wait_turn";
-				break;
-			case Room8_2:
-				room_goto(Room9);
-				state = "wait_turn";
-				break;
-			case Room9:
-				if(player_cnt < 3) room_goto(Room9_1);
-				else room_goto(Room9_2);
-				state = "wait_turn";
-				break;
-			case Room9_1:
-				room_goto(Room10);
-				state = "wait_turn";
-				break;
-			case Room9_2:
-				room_goto(Room10);
-				state = "wait_turn";
-				break;
-			case Room10:
-				room_goto(RoomFinal);
-				state = "wait_turn";
-				break;
-			case RoomFinal:
-				global.endclear = true;
-				if(player_cnt < 3) room_goto(Room1);
-				else room_goto(RoomReal_Final);
-				state = "wait_turn";
-				break;
-			case RoomReal_Final:
-				room_goto(Room1);
-				state = "wait_turn";
-				break;
-		}
+	case BattleState.PLAYER_WIN:
+		battle_process_victory(id);
+		break;
 }
 
 
@@ -267,23 +160,11 @@ for (var i = array_length(balls) - 1; i >= 0; i--) {
 		// 배열에서 제거
         array_delete(balls, i, 1);
 
-        // 턴 중에 죽었으면 즉시 다음 턴으로 넘어가도록 보정
-        if (turn_index == i && state == "moving") {
-			if (turn_index >= array_length(balls)) {
-	            generation += 1;
-			
-		        // 중심 거리 정렬
-		        array_sort(balls, function(a, b) {
-		            return point_distance(a.x, a.y, 480, 480) <
-		                   point_distance(b.x, b.y, 480, 480);
-		        });
-
-		        turn_index = 0;
-	        }
-	
-	        state = "wait_turn";
-	        break;
-        }
+		// 현재 턴의 공이 제거돼도 나머지 공들의 이동이 끝날 때까지 기다립니다.
+		// 배열 삭제로 다음 공이 같은 인덱스로 이동했으므로 end_turn에서 증가시키지 않습니다.
+		if (turn_index == i && state == BattleState.MOVING) {
+			turn_advanced_by_removal = true;
+		}
 
         // turn_index 조정
         if (turn_index > i) turn_index -= 1;
@@ -296,20 +177,20 @@ var enemy_alive = false;
 
 for (var i = 0; i < array_length(balls); i++) {
     if (instance_exists(balls[i])) {
-        if (balls[i].owner == "player") player_alive = true;
-        if (balls[i].owner == "enemy") enemy_alive = true;
+        if (team_is_player(balls[i].owner)) player_alive = true;
+        if (team_is_enemy(balls[i].owner)) enemy_alive = true;
     }
 }
 
-if (!player_alive && battle_ready) state = "enemy_win";
+if (!player_alive && battle_ready) state = BattleState.ENEMY_WIN;
 if (!enemy_alive && battle_ready){
-	state = "player_win";
+	state = BattleState.PLAYER_WIN;
 	battle_ready = false;
 }
 
 
 // 1. 현재 룸 이름을 가져옵니다. (예: "Room3_2")
-var _room_name = room_get_name(room);
+/*var _room_name = room_get_name(room);
 
 // 2. 이름에서 "Room" 부분을 제거합니다. (예: "3_2")
 var _stage_string = string_replace(_room_name, "Room", "");
@@ -328,7 +209,8 @@ global.stage_display_text = "Stage " + string(global.current_stage_main) + " - "
 // 'Room1'과 같이 서브 번호가 없는 경우 (예: 'Room1' -> 'Stage 1')
 if (global.current_stage_sub == "X") {
     global.stage_display_text = "Stage " + string(global.current_stage_main);
-}
+}*/
+stage_update_display(room);
 
 
 

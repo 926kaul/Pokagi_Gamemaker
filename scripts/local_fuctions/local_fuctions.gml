@@ -1,20 +1,22 @@
 function start_turn_system() {
 
 	var ctrl = id;
+	// 재호출되더라도 이전 인스턴스 참조가 남지 않도록 항상 새로 구성합니다.
+	ctrl.balls = [];
 
     with (obj_ball) {
-        if (owner == "player" || owner == "enemy") {
+        if (placed && team_is_active(owner)) {
             array_push(ctrl.balls, id);
         }
     }
 
     array_sort(ctrl.balls, function(a, b) {
-        return point_distance(b.x, b.y, 480, 480) - point_distance(a.x, a.y, 480, 480);
+        return board_distance_from_center(b) - board_distance_from_center(a);
     });
 
     turn_index = 0;
     generation = 1;
-    state = "wait_turn";
+    state = BattleState.WAIT_TURN;
 }
 
 
@@ -23,7 +25,7 @@ function enemy_take_action(enemy_inst) {
     var player_list = array_create(0);
 
     with (obj_ball) {
-        if (owner == "player") array_push(player_list, id);
+        if (team_is_player(owner)) array_push(player_list, id);
     }
 	
 	
@@ -37,7 +39,7 @@ function enemy_take_action(enemy_inst) {
 
     var pull_power = irandom_range(3, 5);
 
-    var max_pull = 200;
+    var max_pull = global.board.max_pull;
     var X = pull_power * (max_pull / 5);
 
     var t = X / max_pull;
@@ -68,7 +70,7 @@ function select_enemies_for_room(_target_ids, _count) {
     
     for (var i = 0; i < array_length(_target_ids); i++) {
         var _id = _target_ids[i];
-        if (_mypokemon_inst.my_pokes[_id - 1] == 0) {
+        if (!profile_is_caught(_id)) {
             array_push(_available_ids, _id); // 아직 잡지 않음
         } else {
             array_push(_caught_ids, _id); // 이미 잡음
@@ -115,10 +117,10 @@ function select_enemies_for_room(_target_ids, _count) {
 function spawn_enemies_for_room(_target_ids, _count) {
     
     // 1. 고정된 소환 영역 (하드코딩)
-    var _x_min = 120;
-    var _x_max = 840;
-    var _y_min = 120;
-    var _y_max = 440;
+    var _x_min = global.board.left;
+    var _x_max = global.board.right;
+    var _y_min = global.board.top;
+    var _y_max = global.board.player_top - global.board.grid_size;
     
     // 1. 소환할 포켓몬 ID 선택 (기존 select_enemies_for_room 함수 사용)
     var _selected_ids = select_enemies_for_room(_target_ids, _count);
@@ -132,15 +134,21 @@ function spawn_enemies_for_room(_target_ids, _count) {
     var _positions = [];
     var _attempts = 0;
     
-    // 원하는 마릿수만큼 위치를 찾거나 시도 횟수가 100회를 초과할 때까지 반복
-    while (array_length(_positions) < _count && _attempts < 100) {
+    // 포켓몬의 실제 크기까지 고려해 겹치지 않는 위치를 찾습니다.
+    while (array_length(_positions) < array_length(_selected_ids) && _attempts < 500) {
         var _x_new = irandom_range(_x_min, _x_max);
         var _y_new = irandom_range(_y_min, _y_max);
         var _is_duplicate = false;
+        var _new_index = array_length(_positions);
+        var _new_id = _selected_ids[_new_index];
+        var _new_radius = 20 * global.poke_stats[_new_id].size;
         
         // 이미 생성된 위치와 겹치는지 확인
         for (var i = 0; i < array_length(_positions); i++) {
-            if (_positions[i][0] == _x_new && _positions[i][1] == _y_new) {
+            var _placed_id = _selected_ids[i];
+            var _placed_radius = 20 * global.poke_stats[_placed_id].size;
+            var _min_distance = _new_radius + _placed_radius + 4;
+            if (point_distance(_x_new, _y_new, _positions[i][0], _positions[i][1]) < _min_distance) {
                 _is_duplicate = true;
                 break;
             }
@@ -183,6 +191,7 @@ function save_my_pokes() {
         return; 
     }
     
+    var _save_key = "poke_status_str_v2";
     var _pokes_array = _mypokemon_inst.my_pokes;
     var _array_len = array_length(_pokes_array);
     
@@ -210,7 +219,7 @@ function save_my_pokes() {
     }
     
     // 3. LocalStorage에 저장
-    var _file = file_text_open_write("poke_status_str");
+    var _file = file_text_open_write(_save_key);
     file_text_write_string(_file, _save_string);
     file_text_close(_file);
 
@@ -225,13 +234,15 @@ function load_my_pokes() {
         return; 
     }
     
+    var _save_key = "poke_status_str_v2";
+
     // 1. 새 배열을 0으로 초기화
     var _new_pokes_array = array_create(151, 0); 
     var _save_string = "";
     
     // 2. LocalStorage에서 문자열 불러오기
-    if (file_exists("poke_status_str")) {
-        var _file = file_text_open_read("poke_status_str");
+    if (file_exists(_save_key)) {
+        var _file = file_text_open_read(_save_key);
         _save_string = file_text_read_string(_file); 
         file_text_close(_file);
     } 

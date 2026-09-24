@@ -2,15 +2,15 @@ var player_count = 0;
 var enemy_count = 0;
 
 // 바둑판 영역
-var left = 120;
-var right = 840;
-var top = 120;
-var bottom = 840;
+var left = global.board.left;
+var right = global.board.right;
+var top = global.board.top;
+var bottom = global.board.bottom;
 
 with (obj_ball) {
     if (x >= left && x <= right && y >= top && y <= bottom) {
-        if (owner == "player") player_count++;
-        if (owner == "enemy") {
+        if (team_is_player(owner)) player_count++;
+        if (team_is_enemy(owner)) {
 			enemy_count++;
 			placed = true;
 		}

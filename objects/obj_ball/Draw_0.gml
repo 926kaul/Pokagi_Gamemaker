@@ -1,10 +1,10 @@
 draw_self();
-if(owner == "enemy") image_blend = make_colour_rgb(255, 191, 191);;
+if(team_is_enemy(owner)) image_blend = make_colour_rgb(255, 191, 191);;
 
 // 샷 조준 중이면 라인 그리기
 if (is_shooting) {
 
-    var max_len = 200;
+    var max_len = global.board.max_pull;
 
     // 마우스로부터 당긴 벡터
     var dx = mouse_x - x;
