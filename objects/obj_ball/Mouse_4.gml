@@ -1,4 +1,5 @@
-if (!obj_controller. turn_system_started
+if (!obj_controller.turn_system_started
+    && !obj_controller.battle_ready
     && team_is_player(owner)
     && !placed) 
 {

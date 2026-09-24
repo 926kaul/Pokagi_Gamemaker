@@ -8,6 +8,8 @@ var _by1 = y;
 var _bx2 = x + 64;
 var _by2 = y + 64;
 var _collection_locked = instance_exists(obj_tutorial1);
+var _placement_enabled = !obj_controller.battle_ready
+    && !obj_controller.turn_system_started;
 var _hover = !_collection_locked
     && point_in_rectangle(mouse_x, mouse_y, _bx1, _by1, _bx2, _by2);
 
@@ -17,7 +19,7 @@ if (_collection_locked && pokeball_opened) {
     clear_pokeball_instances();
 }
 
-if (_hover && !obj_controller.battle_ready && mouse_check_button_pressed(mb_left)) {
+if (_hover && mouse_check_button_pressed(mb_left)) {
     pokeball_opened = !pokeball_opened;
     if (pokeball_opened) {
         create_pokeball_instances();
@@ -40,7 +42,7 @@ draw_set_valign(fa_middle);
 draw_set_colour(ui_colour("muted"));
 draw_text(x + 32, y + 51, string(_caught_count) + "/151");
 
-if (pokeball_opened && !obj_controller.battle_ready) {
+if (pokeball_opened) {
     var _drawer_x1 = collection_panel_x1;
     var _drawer_y1 = collection_panel_y1;
     var _drawer_x2 = collection_panel_x2;
@@ -52,7 +54,7 @@ if (pokeball_opened && !obj_controller.battle_ready) {
         if (team_is_player(owner) && !placed
             && point_distance(x, y, mouse_x, mouse_y) <= 12) {
             _hovered_pokemon = pokemon_id;
-            if (mouse_check_button_pressed(mb_left)) {
+            if (_placement_enabled && mouse_check_button_pressed(mb_left)) {
                 is_placing = true;
                 if (!has_collection_home) {
                     original_x = x;
@@ -82,7 +84,10 @@ if (pokeball_opened && !obj_controller.battle_ready) {
     draw_text(_drawer_x1 + 14, _drawer_y1 + 13, "지닌 포켓몬");
     draw_set_font(Font6);
     draw_set_colour(ui_colour("muted"));
-    draw_text(_drawer_x1 + 14, _drawer_y1 + 43, "드래그해 내 진영에 배치 · 최대 3마리");
+    draw_text(_drawer_x1 + 14, _drawer_y1 + 43,
+        _placement_enabled
+            ? "드래그해 내 진영에 배치 · 최대 3마리"
+            : "포켓몬에 마우스를 올려 정보를 확인하세요");
     draw_set_halign(fa_right);
     draw_set_colour(ui_colour("cyan"));
     draw_text(_drawer_x2 - 14, _drawer_y1 + 18,

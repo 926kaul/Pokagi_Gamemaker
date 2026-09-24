@@ -28,7 +28,7 @@ function enemy_take_action(enemy_inst) {
     var player_list = array_create(0);
 
     with (obj_ball) {
-        if (team_is_player(owner)) array_push(player_list, id);
+        if (placed && team_is_player(owner)) array_push(player_list, id);
     }
 	
 	
